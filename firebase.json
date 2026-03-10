@@ -1,0 +1,22 @@
+{
+    "hosting": {
+        "public": ".",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "*.log",
+            "*.map",
+            "node_modules/**",
+            ".github/**",
+            "update_chatbot.js",
+            "update_html.js",
+            "global_cleanup.js",
+            "batch_update.js",
+            "add_wattala_pill.js",
+            "firebase-admin.js",
+            "firebase-debug.log",
+            "firebase-admin.js",
+            "info-logic.js"
+        ]
+    }
+}

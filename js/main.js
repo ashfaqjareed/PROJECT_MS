@@ -279,27 +279,61 @@ function logoutUser() {
 /* ── UPDATE NAV AUTH STATE ──────────────────────────── */
 function updateNavAuth() {
     var user = getUser();
-    var loggedOut = document.getElementById('auth-logged-out');
-    var loggedIn = document.getElementById('auth-logged-in');
+
+    // Support both ID-based (most pages) and class-based (login.html) headers
+    var loggedOut = document.getElementById('auth-logged-out')
+        || document.getElementById('nav-auth-logged-out');
+    var loggedIn = document.getElementById('auth-logged-in')
+        || document.getElementById('nav-auth-logged-in');
+
+    // Also support class-based selectors from login.html header
+    var loginBtn = document.querySelector('.nav-login-btn');
+    var userBtn = document.querySelector('.nav-user-btn');
+    var userDropdown = document.querySelector('.user-dropdown');
+
     var userName = document.getElementById('user-trigger-name');
     var avatar = document.getElementById('user-avatar-initial');
     var dropName = document.getElementById('dropdown-user-name');
     var dropPhone = document.getElementById('dropdown-user-phone');
+
     if (user) {
+        // Hide logged-out elements
         if (loggedOut) loggedOut.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'none';
+
+        // Show logged-in elements
         if (loggedIn) loggedIn.style.display = 'flex';
+        if (userBtn) userBtn.style.display = 'flex';
+
         var first = (user.name || 'User').split(' ')[0];
         if (userName) userName.textContent = first;
         if (avatar) avatar.textContent = first.charAt(0).toUpperCase();
         if (dropName) dropName.textContent = user.name || 'User';
         if (dropPhone) dropPhone.textContent = user.phone || '';
 
-        var navAccLi = document.getElementById('nav-account-li');
-        if (navAccLi) navAccLi.style.display = user ? 'list-item' : 'none';
+        // Also set the span inside .nav-user-btn
+        var userBtnSpan = userBtn ? userBtn.querySelector('span') : null;
+        if (userBtnSpan) userBtnSpan.textContent = first;
+
+        // Show "My Account" nav link if it exists
+        var navAccLi = document.getElementById('nav-account-li')
+            || document.getElementById('nav-my-account');
+        if (navAccLi) navAccLi.style.display = '';
 
     } else {
+        // Show logged-out elements
         if (loggedOut) loggedOut.style.display = 'flex';
+        if (loginBtn) loginBtn.style.display = '';
+
+        // Hide logged-in elements
         if (loggedIn) loggedIn.style.display = 'none';
+        if (userBtn) userBtn.style.display = 'none';
+        if (userDropdown) userDropdown.classList.remove('open');
+
+        // Hide "My Account" nav link
+        var navAccLi = document.getElementById('nav-account-li')
+            || document.getElementById('nav-my-account');
+        if (navAccLi) navAccLi.style.display = 'none';
     }
 }
 
@@ -350,16 +384,122 @@ function checkLoyaltyCard() {
         });
 }
 
-// Dropdown Toggle Logic
+// Expose auth functions globally for login.html and header
+window.logoutUser = logoutUser;
+window.updateNavAuth = updateNavAuth;
+window.doSignIn = doSignIn;
+window.doSignUp = doSignUp;
+window.switchLoginTab = switchLoginTab;
+window.checkLoyaltyCard = checkLoyaltyCard;
+
+// handleLogin / handleRegister — called by login.html's submitLogin() and submitRegister()
+window.handleLogin = async (phone, pin) => {
+    phone = phone.replace(/\s/g, '');
+    if (phone.length < 9) {
+        showToast('Please enter your 9-digit phone number.', 'error');
+        return;
+    }
+    if (!pin || pin.length < 4) {
+        showToast('Please enter your PIN.', 'error');
+        return;
+    }
+    var fullPhone = phone.startsWith('0') ? phone : '0' + phone;
+    var email = fullPhone + '@multisuper.lk';
+
+    try {
+        await firebase.auth().signInWithEmailAndPassword(email, pin);
+        var doc = await firebase.firestore().collection('customers').doc(fullPhone).get();
+        var data = doc.exists
+            ? doc.data()
+            : {
+                name: 'Customer', phone: fullPhone, points: 0, tier: 'Bronze',
+                cardNumber: 'MS-' + fullPhone.slice(-4),
+                memberSince: new Date().toISOString().split('T')[0]
+            };
+        saveUser(data);
+        updateNavAuth();
+        showToast('Welcome back, ' + (data.name || '').split(' ')[0] + '!', 'success');
+        setTimeout(function () { window.location.href = 'account.html'; }, 1000);
+    } catch (err) {
+        if (err.code === 'auth/user-not-found') {
+            showToast('Phone number not found. Please sign up.', 'error');
+        } else if (err.code === 'auth/wrong-password') {
+            showToast('Incorrect PIN. Please try again.', 'error');
+        } else {
+            showToast(err.message || 'Sign-in failed. Try again.', 'error');
+        }
+    }
+};
+
+window.handleRegister = async (data) => {
+    var name = (data.name || '').trim();
+    var phoneRaw = (data.phone || '').replace(/\s/g, '');
+    var pin = data.pin || '';
+    var email = data.email || '';
+
+    if (name.length < 2) { showToast('Please enter your full name.', 'error'); return; }
+    if (phoneRaw.length < 9) { showToast('Please enter a valid phone number.', 'error'); return; }
+    if (pin.length < 4) { showToast('PIN must be at least 4 digits.', 'error'); return; }
+
+    var fullPhone = phoneRaw.startsWith('0') ? phoneRaw : '0' + phoneRaw;
+    var authEmail = fullPhone + '@multisuper.lk';
+    var cardNumber = 'MS-' + Date.now().toString().slice(-6);
+
+    try {
+        await firebase.auth().createUserWithEmailAndPassword(authEmail, pin);
+        var userData = {
+            name: name,
+            phone: fullPhone,
+            email: email || authEmail,
+            cardNumber: cardNumber,
+            memberSince: new Date().toISOString().split('T')[0],
+            tier: 'Bronze',
+            points: 0,
+            totalSpent: 0,
+            transactions: []
+        };
+        await firebase.firestore().collection('customers').doc(fullPhone).set(userData);
+        saveUser(userData);
+        updateNavAuth();
+        showToast('Account created! Redirecting...', 'success');
+        setTimeout(function () { window.location.href = 'account.html'; }, 1200);
+    } catch (err) {
+        if (err.code === 'auth/email-already-in-use') {
+            showToast('This phone already has an account. Please sign in.', 'error');
+        } else if (err.code === 'auth/weak-password') {
+            showToast('PIN must be at least 6 characters.', 'error');
+        } else {
+            showToast(err.message || 'Registration failed.', 'error');
+        }
+    }
+};
+
+// Dropdown Toggle Logic — works with both old and new header IDs
 (function () {
-    var trigger = document.getElementById('header-user-trigger');
-    var dropdown = document.getElementById('header-user-dropdown');
+    // Try the new header IDs first, fall back to legacy
+    var trigger = document.getElementById('header-user-trigger')
+        || document.querySelector('.nav-user-btn');
+    var dropdown = document.getElementById('header-user-dropdown')
+        || document.querySelector('.user-dropdown');
     if (!trigger || !dropdown) return;
+
     trigger.addEventListener('click', function (e) {
         e.stopPropagation();
         var open = dropdown.classList.toggle('open');
         trigger.setAttribute('aria-expanded', String(open));
     });
+
+    // Mouse enter / leave for hover-based dropdown
+    var wrap = trigger.closest('.header-account-wrap') || trigger.parentElement;
+    if (wrap) {
+        wrap.addEventListener('mouseenter', function () {
+            dropdown.classList.add('open');
+        });
+        wrap.addEventListener('mouseleave', function () {
+            dropdown.classList.remove('open');
+        });
+    }
+
     document.addEventListener('click', function () {
         if (dropdown) dropdown.classList.remove('open');
     });
@@ -418,9 +558,19 @@ window.formatPoints = (n) => {
     return new Intl.NumberFormat('en-US').format(n || 0) + " pts";
 };
 
+window.getComingSaturday = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
+    return d;
+};
+
 window.formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
+    let date;
+    if (!dateStr) {
+        date = window.getComingSaturday();
+    } else {
+        date = new Date(dateStr);
+    }
     return date.toLocaleDateString('en-GB', {
         weekday: 'short',
         day: 'numeric',
@@ -503,7 +653,7 @@ window.buildOfferCard = (offer, isHorizontal = false, isSlider = false) => {
         <div class="offer-card anim ${layoutClass} ${offer.isHot ? 'hot-offer' : ''}" style="--accent: ${accentColor}; ${isSlider ? 'min-width: 280px; flex: 0 0 280px;' : ''}">
             <div class="offer-badge-wrap">
                 <div class="offer-save-badge">SAVE ${window.formatPrice(savings)}</div>
-                ${offer.isHot ? '<div class="hot-tag"><i class="fas fa-fire"></i> HOT</div>' : ''}
+                ${offer.isHot ? '<div class="hot-tag">🔥 HOT</div>' : ''}
             </div>
             
             <div class="offer-image">

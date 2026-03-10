@@ -286,11 +286,14 @@
                     </div>
                 </div>
                 <div class="anim anim-delay-1"
-                    style="display: flex; justify-content: center; position: relative; perspective: 1000px;">
+                    style="display: flex; flex-direction: column; align-items: center; position: relative; perspective: 1000px;">
                     <!-- Hero Rotator Container -->
                     <div id="hero-offer-rotator"
-                        style="width: 300px; transform: rotate(3deg); transform-style: preserve-3d; transition: transform 0.8s ease;">
+                        style="width: 300px; transform: rotate(3deg); transform-style: preserve-3d; transition: transform 0.8s ease; margin-bottom: 20px;">
                         <!-- JS populated rotating card -->
+                    </div>
+                    <!-- Dots Container -->
+                    <div id="hero-offer-dots" style="display: flex; gap: 8px;">
                     </div>
                 </div>
             </div>
@@ -306,18 +309,9 @@
             </div>
 
             <div class="slider-container" style="position: relative;">
-                <div id="hot-offers-slider" class="flex gap-4"
-                    style="overflow-x: auto; scroll-behavior: smooth; padding: 10px 0 30px; scrollbar-width: none; -ms-overflow-style: none;">
+                <div id="hot-offers-slider" class="hot-offers-grid" style="padding: 10px 0 30px;">
                     <!-- Will be populated by JS -->
                 </div>
-                <button class="slider-nav prev"
-                    onclick="document.getElementById('hot-offers-slider').scrollBy({left: -300, behavior: 'smooth'})"
-                    style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%); z-index: 10; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer;"><i
-                        class="fas fa-chevron-left"></i></button>
-                <button class="slider-nav next"
-                    onclick="document.getElementById('hot-offers-slider').scrollBy({left: 300, behavior: 'smooth'})"
-                    style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%); z-index: 10; background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer;"><i
-                        class="fas fa-chevron-right"></i></button>
             </div>
 
             <p style="text-align: center; color: var(--color-text-muted); margin-top: 32px; font-size: 0.9rem;">
@@ -642,7 +636,67 @@
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
     <script>
+        let heroInterval;
+        function initHeroRotator() {
+            const container = document.getElementById('hero-offer-rotator');
+            const dotsContainer = document.getElementById('hero-offer-dots');
+            if (!container || !window.WEEKLY_OFFERS || !window.WEEKLY_OFFERS.length) return;
+
+            const offers = window.WEEKLY_OFFERS.slice(0, 5);
+            if (offers.length === 0) return;
+
+            let currentIndex = 0;
+
+            function renderCard(index) {
+                container.innerHTML = window.buildOfferCard(offers[index]);
+                // Re-apply styles if needed (hero cards might need slight tweaks)
+                const card = container.querySelector('.offer-card');
+                if (card) {
+                    card.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';
+                    card.style.margin = '0';
+                }
+                const dots = dotsContainer.querySelectorAll('.dot');
+                dots.forEach((dot, i) => {
+                    dot.style.background = i === index ? '#fff' : 'rgba(255,255,255,0.5)';
+                });
+            }
+
+            // Create dots
+            if (dotsContainer) {
+                dotsContainer.innerHTML = offers.map((_, i) =>
+                    `<div class="dot" data-index="${i}" style="width: 10px; height: 10px; border-radius: 50%; background: ${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'}; cursor: pointer; transition: background 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`
+                ).join('');
+
+                dotsContainer.querySelectorAll('.dot').forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        currentIndex = parseInt(e.target.dataset.index);
+                        renderCard(currentIndex);
+                        resetInterval();
+                    });
+                });
+            }
+
+            function nextCard() {
+                currentIndex = (currentIndex + 1) % offers.length;
+                renderCard(currentIndex);
+            }
+
+            function resetInterval() {
+                clearInterval(heroInterval);
+                heroInterval = setInterval(nextCard, 5000);
+            }
+
+            container.addEventListener('mouseenter', () => clearInterval(heroInterval));
+            container.addEventListener('mouseleave', resetInterval);
+
+            renderCard(currentIndex);
+            resetInterval();
+        }
+
+        document.addEventListener('DOMContentLoaded', initHeroRotator);
+
         document.addEventListener('firebaseDataLoaded', () => {
+            initHeroRotator();
             renderDynamicContent();
 
             // Re-render when branch changes

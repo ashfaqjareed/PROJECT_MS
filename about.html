@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — Multi Super</title>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <style>
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 70px;
+        }
+
+        .story-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .story-image {
+            width: 100%;
+            height: 400px;
+            background: var(--color-bg-alt);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-muted);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 70px;
+        }
+
+        .value-card {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-top: 5px solid var(--color-primary);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Stats */
+        .stats-banner {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            padding: 60px 0;
+            color: white;
+            margin-bottom: 70px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-block .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: var(--font-heading);
+            display: block;
+        }
+
+        .stat-block .stat-desc {
+            font-size: 1rem;
+            opacity: 0.85;
+            font-weight: 600;
+        }
+
+        /* Why Shop */
+        .why-section {
+            margin-bottom: 70px;
+        }
+
+        .why-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 50px;
+            padding-bottom: 50px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .why-block:last-child {
+            border-bottom: none;
+        }
+
+        .why-block.reverse .why-content {
+            order: 2;
+        }
+
+        .why-block.reverse .why-visual {
+            order: 1;
+        }
+
+        .why-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .why-content p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefit-list li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .benefit-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+            font-weight: 800;
+        }
+
+        .why-visual {
+            height: 280px;
+            background: var(--color-primary-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        /* Team */
+        .team-card {
+            text-align: center;
+            padding: 50px;
+            background: var(--color-bg-alt);
+            border-radius: var(--radius-lg);
+            margin-bottom: 50px;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px 0;
+            border-top: 1px solid var(--color-border);
+        }
+
+        @media (max-width: 768px) {
+
+            .story-grid,
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .why-block {
+                grid-template-columns: 1fr;
+            }
+
+            .why-block.reverse .why-content {
+                order: 1;
+            }
+
+            .why-block.reverse .why-visual {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="header-toggle-btn" id="header-toggle" aria-label="Show navigation">☰</button>
+    <!-- Page Loader -->
+    <div class="page-loader" id="page-loader">
+        <div class="loader-logo">
+            <span class="loader-multi">Multi</span>
+            <span class="loader-super">Super</span>
+        </div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Desktop Site Notice -->
+    <div class="desktop-notice">Best viewed on a desktop monitor for the full regional experience.</div>
+
+    <!-- AI Chatbot Malee -->
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div id="malee-window" class="chatbot-window">
+        <div class="chatbot-header">
+            <span>Malee — Multi Super AI</span>
+            <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
+        </div>
+        <div id="malee-messages" class="chatbot-messages">
+            <div class="chat-msg bot">Ayubowan! &#x1F64F; I'm Malee, your friendly Multi Super AI. What can I help you with
+                today?</div>
+            <div class="quick-replies">
+                <button onclick="window.sendMaleeMessage('Branches')">&#x1F3EA; Branches</button>
+                <button onclick="window.sendMaleeMessage('Hot Offers')">&#x1F525; Hot Offers</button>
+                <button onclick="window.sendMaleeMessage('Loyalty Card')">&#x1F4B3; Loyalty Card</button>
+                <button onclick="window.sendMaleeMessage('Products')">&#x1F6D2; Products</button>
+                <button onclick="window.sendMaleeMessage('Rates')">&#x1F4CA; Today's Rates</button>
+                <button onclick="window.sendMaleeMessage('Stock Check')">&#x1F4E6; Stock Check</button>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="malee-input" placeholder="Ask me anything..."
+                onkeypress="if(event.key === 'Enter') window.sendMaleeMessage()">
+            <button onclick="window.sendMaleeMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="header-main">
+            <div class="container flex align-center gap-4">
+                <a href="index.html" class="site-logo">
+                    <img loading="lazy" src="img/logo.png" alt="Multi Super Logo" style="height: 60px;">
+                </a>
+
+                <div class="header-search">
+                    <form class="search-wrap"
+                        onsubmit="window.location.href='search-results.html?q=' + document.getElementById('product-search').value; return false;">
+                        <input type="text" id="product-search" placeholder="Search products, brands, categories...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+
+                <div class="header-actions">
+                    <div class="header-account-wrap">
+                        <!-- SIGN IN (Logged Out) -->
+                        <div id="nav-auth-logged-out" class="flex gap-2">
+                            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                            <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+                        </div>
+                        <!-- USER MENU (Logged In) -->
+                        <div id="nav-auth-logged-in" style="display: none;">
+                            <div class="nav-user-btn">
+                                <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                <span id="nav-user-name"></span>
+                                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                            </div>
+                            <div class="user-dropdown">
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
+                                    Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
+                                    Orders</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
+                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-nav hide-mobile">
+            <div class="container flex">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="offers.html" class="nav-link">Weekly Offers</a>
+                <a href="rates.html" class="nav-link">Today's Rates</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="stock.html" class="nav-link">Stock Check</a>
+                <a href="pamphlet.html" class="nav-link">Pamphlet</a>
+                <a href="branches.html" class="nav-link">Branches</a>
+                <a href="about.html" class="nav-link active">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="account.html" class="nav-link" id="nav-my-account" style="display: none;">My Account</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <header class="page-hero" style="background: linear-gradient(135deg, #C62828 0%, #D32F2F 50%, #E53935 100%);">
+        <div class="container text-center">
+            <h1>About Multi Super</h1>
+            <p style="opacity: 0.9;">Your neighbourhood supermarket since 2018.</p>
+        </div>
+    </header>
+
+    <div class="container section">
+        <!-- Our Story -->
+        <div class="story-grid">
+            <div class="story-text">
+                <h2 style="margin-bottom: 25px;">Our Story</h2>
+                <p>Multi Super began with a simple goal — to give the people of Akurana a modern, well-stocked
+                    supermarket right at their doorstep. Founded in 2018 by a group of local entrepreneurs, our first
+                    store on Main Street quickly became the go-to shopping destination for families in the Kandy
+                    district.</p>
+                <p>As word spread, so did our reach. We opened our Kandy City branch on Peradeniya Road, followed by
+                    Matale and most recently our Wattala outlet — bringing us into the Western Province. Today, Multi
+                    Super operates across 4 locations, each tailored to the needs of the local community it serves.</p>
+                <p>But no matter how much we grow, we never forget where we started. Our commitment is to provide fresh
+                    produce, fair prices, and friendly service — every single day. That's the Multi Super promise.</p>
+            </div>
+            <div class="story-image">
+                <div style="text-align: center;">
+                    <i class="fas fa-store" style="font-size: 4rem; margin-bottom: 10px; display: block;"></i>
+                    Store Photo
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission / Vision / Values -->
+        <h2 class="text-center" style="margin-bottom: 40px;">What We Stand For</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <span class="value-icon">&#x1F3AF;</span>
+                <h3>Our Mission</h3>
+                <p>To make quality groceries accessible and affordable for every family in our communities.</p>
+            </div>
+            <div class="value-card">
+                <span class="value-icon">&#x1F52D;</span>
+                <h3>Our Vision</h3>
+                <p>To become Sri Lanka's most trusted regional supermarket chain, known for freshness and community
+                    care.</p>
+            </div>
+            <div class="value-card">
+                <span class="value-icon">&#x1F49A;</span>
+                <h3>Our Values</h3>
+                <p>Freshness first. Fair pricing. Local sourcing. Customer loyalty. Community impact.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Banner -->
+    <section class="stats-banner">
+        <div class="container">
+            <div class="stats-row">
+                <div class="stat-block">
+                    <span class="stat-number" data-target="4">0</span>
+                    <span class="stat-desc">Branches</span>
+                </div>
+                <div class="stat-block">
+                    <span class="stat-number" data-target="15000">0</span>
+                    <span class="stat-desc">Products In-Store</span>
+                </div>
+                <div class="stat-block">
+                    <span class="stat-number" data-target="80000">0</span>
+                    <span class="stat-desc">Loyal Customers</span>
+                </div>
+                <div class="stat-block">
+                    <span class="stat-number" data-target="8">0</span>
+                    <span class="stat-desc">Years Serving Sri Lanka</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container section">
+        <!-- Why Shop With Us -->
+        <h2 class="text-center" style="margin-bottom: 50px;">Why Shop With Us</h2>
+
+        <div class="why-section">
+            <div class="why-block">
+                <div class="why-content">
+                    <h3>Fresh Every Day</h3>
+                    <p>We source produce directly from Central Province farms and local fisheries, ensuring that what
+                        you buy today was harvested yesterday.</p>
+                    <ul class="benefit-list">
+                        <li>Daily delivery from local farms in Kandy & Matale</li>
+                        <li>In-store butcher and bakery at selected branches</li>
+                        <li>Cold-chain logistics for dairy and frozen goods</li>
+                    </ul>
+                </div>
+                <div class="why-visual">&#x1F33F;</div>
+            </div>
+
+            <div class="why-block reverse">
+                <div class="why-content">
+                    <h3>Loyalty Rewards</h3>
+                    <p>Every rupee you spend earns you points. Redeem them for exclusive discounts, or climb the ranks
+                        from Bronze to Platinum for special perks.</p>
+                    <ul class="benefit-list">
+                        <li>Earn 1 point for every Rs. 100 spent in-store</li>
+                        <li>4 tiers with increasing benefits and rewards</li>
+                        <li>Birthday bonuses and seasonal point multipliers</li>
+                    </ul>
+                </div>
+                <div class="why-visual">⭐</div>
+            </div>
+
+            <div class="why-block">
+                <div class="why-content">
+                    <h3>Always Informed</h3>
+                    <p>Our website and weekly pamphlet keep you updated on prices, offers, and stock — before you even
+                        step into the store.</p>
+                    <ul class="benefit-list">
+                        <li>Weekly digital pamphlet delivered to your inbox</li>
+                        <li>Real-time stock checker on our website</li>
+                        <li>Branch-specific offers tailored to your location</li>
+                    </ul>
+                </div>
+                <div class="why-visual">&#x1F4CA;</div>
+            </div>
+        </div>
+
+        <!-- Team -->
+        <div class="team-card">
+            <i class="fas fa-users" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 20px;"></i>
+            <h3>Meet Our Team</h3>
+            <p style="color: var(--color-text-muted); max-width: 500px; margin: 15px auto 0;">We're building something
+                special. Our team profiles are coming soon — stay tuned!</p>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h2 style="margin-bottom: 15px;">Ready to Shop?</h2>
+            <p style="color: var(--color-text-muted); margin-bottom: 25px;">Find your nearest Multi Super and start
+                saving today.</p>
+            <a href="branches.html" class="btn btn-primary btn-lg">Find Your Nearest Branch →</a>
+        </div>
+    </div>
+
+    <!-- Footer (New 4-zone structure) -->
+    <footer class="site-footer">
+        <div class="footer-newsletter">
+            <div class="container">
+                <div class="newsletter-text">
+                    <h3>&#128233; Get Next Week's Offers</h3>
+                    <p>Sent every Sunday evening before the offers hit the stores</p>
+                </div>
+                <div class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Your email address"
+                        id="footer-email-input">
+                    <button class="newsletter-btn" onclick="
+              var v=document.getElementById('footer-email-input').value;
+              if(v&&v.includes('@')){
+                showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
+                document.getElementById('footer-email-input').value='';
+              } else {
+                showToast('Please enter a valid email address','error');
+              }
+            ">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-main">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <span class="logo-multi">Multi</span><span class="logo-super">Super</span>
+                        </div>
+                        <p class="footer-tagline">Quality and value across Akurana,
+                            Katugastota, Warakamura, Mallawapitiya and Wattala.<br>
+                            Visit once, feel the difference!</p>
+                        <div class="footer-social">
+                            <a href="https://www.instagram.com/multisupersl/" target="_blank" rel="noopener noreferrer"
+                                class="social-btn" aria-label="Instagram">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                                </svg>
+                            </a>
+                            <a href="https://web.facebook.com/MultiSuperSL/" target="_blank" rel="noopener noreferrer"
+                                class="social-btn" aria-label="Facebook">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                                </svg>
+                            </a>
+                            <a href="https://wa.me/94XXXXXXXXXX" target="_blank" rel="noopener noreferrer"
+                                class="social-btn" aria-label="WhatsApp">
+                                <!-- REPLACE: real WhatsApp number -->
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0
+                  01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38
+                  8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0
+                  013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="footer-links-col">
+                        <h4 class="footer-heading">Quick Links</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="offers.html">Weekly Offers</a></li>
+                            <li><a href="rates.html">Product Rates</a></li>
+                            <li><a href="products.html">What We Carry</a></li>
+                            <li><a href="stock.html">Stock Check</a></li>
+                            <li><a href="pamphlet.html">Pamphlet</a></li>
+                            <li><a href="branches.html">Our Branches</a></li>
+                            <li><a href="login.html">My Account</a></li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-contact-col">
+                        <h4 class="footer-heading">Get In Touch</h4>
+                        <div class="footer-contact-item">
+                            <span>&#128222;</span><span>081 230 4455</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span>&#128231;</span><span>contact@multisuper.lk</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span>&#128205;</span><span>200, Matale Road, Akurana, Kandy 20850</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span>&#128336;</span><span>7:30 AM 9:30 PM (Daily)</span>
+                        </div>
+                    </div>
+
+                    <div class="footer-branches-col">
+                        <h4 class="footer-heading">Our Branches</h4>
+                        <div class="footer-branches-grid">
+                            <div class="footer-branch-box">
+                                <strong>Akurana 7MP</strong>
+                                <p>200 Matale Road, Akurana</p>
+                                <p>7:30 AM 9:30 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Akurana 6MP</strong>
+                                <p>197 Kurundugahawela, Matale Rd</p>
+                                <p>7:30 AM 9:30 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Katugastota</strong>
+                                <p>161/A Madawala Road</p>
+                                <p>8:00 AM 9:30 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Warakamura</strong>
+                                <p>Warakamura, Kandy District</p>
+                                <p>8:00 AM 9:00 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Mallawapitiya</strong>
+                                <p>Mallawapitiya, Kurunegala</p>
+                                <p>8:00 AM 9:00 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Wattala</strong>
+                                <p>34 Negombo Road, Wattala</p>
+                                <p>8:00 AM 10:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p> &copy; 2025 Multi Super. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="about.html">Privacy Policy</a>
+                    <a href="about.html">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Scroll to top -->
+    <button class="scroll-top"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Scripts -->
+    <script src="js/data.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script>
+        // About page specific scripts
+        window.addEventListener('load', () => {
+            const stats = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-target'));
+                        let count = 0;
+                        const increment = target / 50;
+                        const timer = setInterval(() => {
+                            count += increment;
+                            if (count >= target) {
+                                entry.target.innerText = target.toLocaleString() + (target === 4 ? '' : '+');
+                                clearInterval(timer);
+                            } else {
+                                entry.target.innerText = Math.floor(count).toLocaleString();
+                            }
+                        }, 30);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            stats.forEach(stat => observer.observe(stat));
+        });
+    </script>
+</body>
+
+</html>

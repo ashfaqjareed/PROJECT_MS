@@ -1,0 +1,637 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Pamphlet — Multi Super</title>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <style>
+        .pamphlet-hero {
+            background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: -40px auto 60px;
+            max-width: var(--container-max);
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border-top: 5px solid var(--color-accent);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Pamphlet Mockup */
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .pamphlet-mockup {
+            width: 300px;
+            height: 420px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1),
+                -5px 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            transform: rotate(-3deg);
+            overflow: hidden;
+            padding: 15px;
+        }
+
+        .pamphlet-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 150px;
+            width: 1px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .mockup-header {
+            background: var(--color-primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 8px;
+            text-align: center;
+            font-weight: 800;
+            margin-bottom: 15px;
+            border-radius: 2px;
+        }
+
+        .mockup-line {
+            height: 8px;
+            background: #f0f0f0;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .mockup-line.short {
+            width: 60%;
+        }
+
+        .mockup-line.accent {
+            background: var(--color-primary-light);
+        }
+
+        .mockup-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--color-accent-light);
+            border-radius: 50%;
+            float: right;
+            margin-top: -5px;
+        }
+
+        .mockup-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: var(--color-accent);
+        }
+
+        /* Signup Box */
+        .pamphlet-box {
+            max-width: 600px;
+            margin: 0 auto 60px;
+            background: var(--color-bg-alt);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+
+        .success-state {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--color-success);
+            margin-bottom: 20px;
+        }
+
+        /* Sample List */
+        .sample-section {
+            background: white;
+            padding: 60px 0;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .sample-list {
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: 'Courier New', Courier, monospace;
+            background: #fdfdfd;
+            padding: 40px;
+            border: 1px dashed #ccc;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .sample-cat {
+            font-weight: 800;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eee;
+            margin: 20px 0 10px;
+            color: var(--color-primary);
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+
+            .feature-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="header-toggle-btn" id="header-toggle" aria-label="Show navigation">☰</button>
+    <!-- Page Loader -->
+    <div class="page-loader" id="page-loader">
+        <div class="loader-logo">
+            <span class="loader-multi">Multi</span>
+            <span class="loader-super">Super</span>
+        </div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Desktop Site Notice -->
+    <div class="desktop-notice">Best viewed on a desktop monitor for the full regional experience.</div>
+
+    <!-- AI Chatbot Malee -->
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div id="malee-window" class="chatbot-window">
+        <div class="chatbot-header">
+            <span>Malee — Multi Super AI</span>
+            <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
+        </div>
+        <div id="malee-messages" class="chatbot-messages">
+            <div class="chat-msg bot">Ayubowan! &#x1F64F; I'm Malee, your friendly Multi Super AI. What can I help you with
+                today?</div>
+            <div class="quick-replies">
+                <button onclick="window.sendMaleeMessage('Branches')">&#x1F3EA; Branches</button>
+                <button onclick="window.sendMaleeMessage('Hot Offers')">&#x1F525; Hot Offers</button>
+                <button onclick="window.sendMaleeMessage('Loyalty Card')">&#x1F4B3; Loyalty Card</button>
+                <button onclick="window.sendMaleeMessage('Products')">&#x1F6D2; Products</button>
+                <button onclick="window.sendMaleeMessage('Rates')">&#x1F4CA; Today's Rates</button>
+                <button onclick="window.sendMaleeMessage('Stock Check')">&#x1F4E6; Stock Check</button>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="malee-input" placeholder="Ask me anything..."
+                onkeypress="if(event.key === 'Enter') window.sendMaleeMessage()">
+            <button onclick="window.sendMaleeMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="header-main">
+            <div class="container flex align-center gap-4">
+                <a href="index.html" class="site-logo">
+                    <img loading="lazy" src="img/logo.png" alt="Multi Super Logo" style="height: 60px;">
+                </a>
+
+                <div class="header-search">
+                    <form class="search-wrap"
+                        onsubmit="window.location.href='search-results.html?q=' + document.getElementById('product-search').value; return false;">
+                        <input type="text" id="product-search" placeholder="Search products, brands, categories...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+
+                <div class="header-actions">
+                    <div class="header-account-wrap">
+                        <!-- SIGN IN (Logged Out) -->
+                        <div id="nav-auth-logged-out" class="flex gap-2">
+                            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                            <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+                        </div>
+                        <!-- USER MENU (Logged In) -->
+                        <div id="nav-auth-logged-in" style="display: none;">
+                            <div class="nav-user-btn">
+                                <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                <span id="nav-user-name"></span>
+                                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                            </div>
+                            <div class="user-dropdown">
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
+                                    Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
+                                    Orders</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
+                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-nav hide-mobile">
+            <div class="container flex">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="offers.html" class="nav-link">Weekly Offers</a>
+                <a href="rates.html" class="nav-link">Today's Rates</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="stock.html" class="nav-link">Stock Check</a>
+                <a href="pamphlet.html" class="nav-link active">Pamphlet</a>
+                <a href="branches.html" class="nav-link">Branches</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="account.html" class="nav-link" id="nav-my-account" style="display: none;">My Account</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <header class="pamphlet-hero">
+        <div class="container">
+            <h1 class="anim">Multi Super Weekly Pamphlet &#x1F4EC;</h1>
+            <p class="anim" style="font-size: 1.2rem; opacity: 0.9;">Get next week's full offers and discounts sent
+                straight to your inbox — every Sunday evening.</p>
+        </div>
+    </header>
+
+    <div class="container" style="padding: 0 20px;">
+        <!-- Features -->
+        <div class="features-grid">
+            <div class="feature-card anim">
+                <span class="feature-icon">&#x1F4CB;</span>
+                <h3>Full Offer List</h3>
+                <p>Access the complete list of over 50 items on discount every week.</p>
+            </div>
+            <div class="feature-card anim">
+                <span class="feature-icon">&#x1F3F7;</span>
+                <h3>Exclusive Previews</h3>
+                <p>See upcoming prices before they are even posted in our branches.</p>
+            </div>
+            <div class="feature-card anim">
+                <span class="feature-icon">&#x1F4CD;</span>
+                <h3>Branch-Specific</h3>
+                <p>Personalized deals specifically for your favorite Multi Super branch.</p>
+            </div>
+        </div>
+
+        <!-- Preview Mockup -->
+        <div class="preview-container anim">
+            <div class="pamphlet-mockup">
+                <div class="mockup-header">MULTI SUPER WEEKLY OFFERS</div>
+                <div class="mockup-line accentuate"></div>
+                <div class="mockup-line short"></div>
+                <div class="mockup-circle"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line short"></div>
+                <div class="mockup-line accent"></div>
+                <div class="mockup-circle" style="background: var(--color-primary-light);"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line short"></div>
+                <div class="mockup-footer"></div>
+            </div>
+        </div>
+
+        <!-- Signup Box -->
+        <section class="pamphlet-box anim">
+            <div id="signup-form">
+                <h3 style="margin-bottom: 10px;">Subscribe — It's Free</h3>
+                <p class="text-muted" style="margin-bottom: 30px;">Choose your branch to get the most relevant deals.
+                </p>
+
+                <form id="pamphlet-signup">
+                    <div class="form-group text-left">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="p-name" class="form-input" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group text-left">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="p-email" class="form-input" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group text-left" style="margin-bottom: 25px;">
+                        <label class="form-label">Preferred Branch</label>
+                        <select id="p-branch" class="form-select">
+                            <option value="all">All Branches</option>
+                            <option value="akurana">Akurana</option>
+                            <option value="kandy">Kandy</option>
+                            <option value="matale">Matale</option>
+                            <option value="wattala">Wattala</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-full">Join the List</button>
+                </form>
+
+                <p style="margin-top: 25px; font-size: 0.9rem; color: var(--color-text-muted);">
+                    Join <strong>4,250</strong> customers already receiving our weekly pamphlet.
+                </p>
+            </div>
+
+            <div id="signup-success" class="success-state">
+                <div class="success-icon"><i class="fas fa-circle-check"></i></div>
+                <h2>✓ You're subscribed!</h2>
+                <p>We've added your email to the list. Expect your first digital pamphlet this Sunday evening at 6:00
+                    PM.</p>
+                <button class="btn btn-outline" style="margin-top: 20px;" onclick="location.reload()">Back to
+                    form</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Sample Section -->
+    <section class="sample-section">
+        <div class="container text-center">
+            <h3 class="anim" style="margin-bottom: 40px;">What's in This Week's Pamphlet</h3>
+            <div id="sample-pamphlet-list" class="sample-list anim">
+                <!-- JS populated -->
+            </div>
+
+            <p class="anim" style="margin-top: 40px; font-size: 0.85rem; color: var(--color-text-muted);">
+                To unsubscribe, email <a href="mailto:support@multisuper.lk">pamphlet@multisuper.lk</a> with the subject
+                line <strong>'Unsubscribe'</strong>.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer (New 4-zone structure) -->
+    <footer class="site-footer">
+        <div class="footer-newsletter">
+            <div class="container">
+                <div class="newsletter-text">
+                    <h3>&#128233; Get Next Week's Offers</h3>
+                    <p>Sent every Sunday evening before the offers hit the stores</p>
+                </div>
+                <div class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Your email address"
+                        id="footer-email-input">
+                    <button class="newsletter-btn" onclick="
+              var v=document.getElementById('footer-email-input').value;
+              if(v&&v.includes('@')){
+                showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
+                document.getElementById('footer-email-input').value='';
+              } else {
+                showToast('Please enter a valid email address','error');
+              }
+            ">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-main">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <span class="logo-multi">Multi</span><span class="logo-super">Super</span>
+                        </div>
+                        <p class="footer-tagline">Quality and value across Akurana,
+                            Katugastota, Warakamura, Mallawapitiya and Wattala.<br>
+                            Visit once, feel the difference!</p>
+                        <div class="footer-social">
+                            <a href="https://www.instagram.com/multisupersl/" target="_blank" rel="noopener noreferrer"
+                                class="social-btn" aria-label="Instagram">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                                </svg>
+                            </a>
+                            <a href="https://web.facebook.com/MultiSuperSL/" target="_blank" rel="noopener noreferrer"
+                                class="social-btn" aria-label="Facebook">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                                </svg>
+                            </a>
+                            <a href="https://wa.me/94XXXXXXXXXX" target="_blank" rel="noopener noreferrer"
+                                class="social-btn" aria-label="WhatsApp">
+                                <!-- REPLACE: real WhatsApp number -->
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0
+                  01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38
+                  8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0
+                  013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="footer-links-col">
+                        <h4 class="footer-heading">Quick Links</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="offers.html">Weekly Offers</a></li>
+                            <li><a href="rates.html">Product Rates</a></li>
+                            <li><a href="products.html">What We Carry</a></li>
+                            <li><a href="stock.html">Stock Check</a></li>
+                            <li><a href="pamphlet.html">Pamphlet</a></li>
+                            <li><a href="branches.html">Our Branches</a></li>
+                            <li><a href="login.html">My Account</a></li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-contact-col">
+                        <h4 class="footer-heading">Get In Touch</h4>
+                        <div class="footer-contact-item">
+                            <span>&#128222;</span><span>081 230 4455</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span>&#128231;</span><span>contact@multisuper.lk</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span>&#128205;</span><span>200, Matale Road, Akurana, Kandy 20850</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span>&#128336;</span><span>7:30 AM 9:30 PM (Daily)</span>
+                        </div>
+                    </div>
+
+                    <div class="footer-branches-col">
+                        <h4 class="footer-heading">Our Branches</h4>
+                        <div class="footer-branches-grid">
+                            <div class="footer-branch-box">
+                                <strong>Akurana 7MP</strong>
+                                <p>200 Matale Road, Akurana</p>
+                                <p>7:30 AM 9:30 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Akurana 6MP</strong>
+                                <p>197 Kurundugahawela, Matale Rd</p>
+                                <p>7:30 AM 9:30 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Katugastota</strong>
+                                <p>161/A Madawala Road</p>
+                                <p>8:00 AM 9:30 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Warakamura</strong>
+                                <p>Warakamura, Kandy District</p>
+                                <p>8:00 AM 9:00 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Mallawapitiya</strong>
+                                <p>Mallawapitiya, Kurunegala</p>
+                                <p>8:00 AM 9:00 PM</p>
+                            </div>
+                            <div class="footer-branch-box">
+                                <strong>Wattala</strong>
+                                <p>34 Negombo Road, Wattala</p>
+                                <p>8:00 AM 10:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p> &copy; 2025 Multi Super. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="about.html">Privacy Policy</a>
+                    <a href="about.html">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSamplePamphlet();
+            initSignupHandler();
+        });
+
+        function renderSamplePamphlet() {
+            const list = document.getElementById('sample-pamphlet-list');
+            if (!list) return;
+            const offers = window.WEEKLY_OFFERS;
+
+            // Group by category
+            const grouped = {};
+            offers.forEach(o => {
+                if (!grouped[o.category]) grouped[o.category] = [];
+                grouped[o.category].push(o);
+            });
+
+            let html = `<div style="text-align:center; font-weight:800; border-bottom: 2px solid #333; padding-bottom:10px; margin-bottom:20px;">MULTI SUPER WEEKLY PAMPHLET - SAMPLE</div>`;
+
+            for (const cat in grouped) {
+                html += `<div class="sample-cat">${cat}</div>`;
+                grouped[cat].forEach(o => {
+                    const branches = o.branches.length === 4 ? "All Branches" : o.branches.map(b => b.charAt(0).toUpperCase() + b.slice(1)).join(', ');
+                    html += `${o.title} ${o.unit} â€” Rs. ${o.offerPrice} (was Rs. ${o.originalPrice}) â€” ${branches}<br>`;
+                });
+            }
+
+            list.innerHTML = html;
+        }
+
+        function initSignupHandler() {
+            const form = document.getElementById('pamphlet-signup');
+            const formView = document.getElementById('signup-form');
+            const successView = document.getElementById('signup-success');
+            if (!form) return;
+            const btn = form.querySelector('button[type="submit"]');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Disable button and show loading state
+                const originalBtnText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+
+                const data = {
+                    name: document.getElementById('p-name').value,
+                    email: document.getElementById('p-email').value,
+                    branch: document.getElementById('p-branch').value,
+                    date: new Date().toISOString()
+                };
+
+                try {
+                    // Push to Firestore if firebase is loaded and initialized
+                    if (window.db) {
+                        await db.collection('pamphlet_subscribers').add(data);
+                    }
+
+                    // Show success
+                    formView.style.display = 'none';
+                    successView.style.display = 'block';
+
+                    if (window.showToast) {
+                        window.showToast("Subscribed successfully!", "success");
+                    }
+                } catch (error) {
+                    console.error("Error subscribing to pamphlet: ", error);
+                    if (window.showToast) {
+                        window.showToast("Failed to subscribe. Please try again.", "error");
+                    }
+                    // Reset button state on error
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnText;
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

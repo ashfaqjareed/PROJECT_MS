@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Multi Super - Part 3: Shared Logic
  * The main functional engine for the website
  */
@@ -419,7 +419,7 @@ window.handleLogin = async (phone, pin) => {
         saveUser(data);
         updateNavAuth();
         showToast('Welcome back, ' + (data.name || '').split(' ')[0] + '!', 'success');
-        setTimeout(function () { window.location.href = 'account.html'; }, 1000);
+        window.location.href = 'account.html';
     } catch (err) {
         if (err.code === 'auth/user-not-found') {
             showToast('Phone number not found. Please sign up.', 'error');
@@ -462,7 +462,7 @@ window.handleRegister = async (data) => {
         saveUser(userData);
         updateNavAuth();
         showToast('Account created! Redirecting...', 'success');
-        setTimeout(function () { window.location.href = 'account.html'; }, 1200);
+        window.location.href = 'account.html';
     } catch (err) {
         if (err.code === 'auth/email-already-in-use') {
             showToast('This phone already has an account. Please sign in.', 'error');
@@ -552,6 +552,23 @@ window.formatPrice = (n) => {
         currency: 'LKR',
         minimumFractionDigits: 2
     }).format(n).replace('LKR', 'Rs.');
+};
+
+window.handleImageError = function(img) {
+    if (img.dataset.fallbackApplied) return;
+    img.dataset.fallbackApplied = true;
+    img.style.display = 'none';
+    const parent = img.parentElement;
+    parent.style.position = 'relative';
+    parent.style.background = '#f0f0f0';
+    const fb = document.createElement('div');
+    fb.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:100%;position:absolute;inset:0;';
+    const fbImg = document.createElement('img');
+    fbImg.src = 'img/logo.png';
+    fbImg.style.cssText = 'width:55%;opacity:0.12;filter:grayscale(100%);';
+    fbImg.alt = 'Multi Super';
+    fb.appendChild(fbImg);
+    parent.appendChild(fb);
 };
 
 window.formatPoints = (n) => {
@@ -648,6 +665,11 @@ window.buildOfferCard = (offer, isHorizontal = false, isSlider = false) => {
 
     const layoutClass = isHorizontal ? 'offer-card-horizontal' : '';
     const imgUrl = offer.image || '';
+    
+    var imgSrc = offer.image || '';
+    var imgTag = imgSrc ? '<img src="' + imgSrc + '" alt="' + offer.title + '" style="width:100%;height:100%;object-fit:cover;" onerror="if(window.handleImageError) window.handleImageError(this);">' : '';
+    var fallback = '<img src="img/logo.png" style="width:55%;opacity:0.12;filter:grayscale(100%)" alt="Multi Super">';
+    var imgContent = imgSrc ? imgTag : fallback;
 
     return `
         <div class="offer-card anim ${layoutClass} ${offer.isHot ? 'hot-offer' : ''}" style="--accent: ${accentColor}; ${isSlider ? 'min-width: 280px; flex: 0 0 280px;' : ''}">
@@ -656,11 +678,8 @@ window.buildOfferCard = (offer, isHorizontal = false, isSlider = false) => {
                 ${offer.isHot ? '<div class="hot-tag">🔥 HOT</div>' : ''}
             </div>
             
-            <div class="offer-image">
-                ${imgUrl ?
-            `<img src="${imgUrl}" alt="${offer.title}" loading="lazy" onerror="this.outerHTML='<div class=\'ms-logo-fallback\'><img src=\'img/logo.png\'></div>'">` :
-            `<div class="ms-logo-fallback"><img src="img/logo.png" alt="Multi Super"></div>`
-        }
+            <div class="offer-image" style="position:relative;background:#f5f5f5;display:flex;align-items:center;justify-content:center;">
+                ${imgContent}
                 <div class="offer-cat-pill">${offer.category}</div>
             </div>
 

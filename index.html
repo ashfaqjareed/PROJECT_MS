@@ -145,6 +145,10 @@
     <!-- Category Grid Section -->
     <section class="category-section">
         <div class="container">
+            <h3 class="welcome-subtitle">
+                <span style="color: rgb(0, 0, 0);">Welcome To</span>
+                <span style="color: #e51d20;">Multi Super</span>
+            </h3>
             <h2 class="section-title">Shop by Category</h2>
 
             <div class="category-grid">
@@ -281,11 +285,8 @@
         style="background: linear-gradient(rgba(183, 28, 28, 0.82), rgba(183, 28, 28, 0.82)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; padding: 100px 0; position: relative; overflow: hidden; min-height: 500px; display: flex; align-items: center;">
 
         <div class="container">
-            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;">
+            <div class="hero-split">
                 <div class="anim">
-                    <h3
-                        style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 15px; opacity: 0.8;">
-                        Welcome to Multi Super</h3>
                     <h1 style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px;">Multi Super</h1>
                     <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 32px; max-width: 540px;">Check what's on
                         offer at your nearest Multi Super before you shop. Updated every Monday morning.</p>
@@ -630,7 +631,8 @@
         <div class="footer-bottom">
             <div class="container">
                 <p> 2025 Multi Super. All rights reserved.</p>
-                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for presentation purposes only. Not the official Multi Super website.</p>
+                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for
+                    presentation purposes only. Not the official Multi Super website.</p>
                 <p>Developed by : M.ΛSHFΛQ JΛREED</p>
                 <div class="footer-legal">
                     <a href="about.html">Privacy Policy</a>
@@ -661,8 +663,51 @@
             let currentIndex = 0;
 
             function renderCard(index) {
-                container.innerHTML = window.buildOfferCard(offers[index]);
-                // Re-apply styles if needed (hero cards might need slight tweaks)
+                var offer = offers[index];
+                var savings = offer.originalPrice - offer.offerPrice;
+                var savingsPercent = Math.round((savings / offer.originalPrice) * 100);
+                var catColors = { 'Fresh Produce': '#4CAF50', 'Meat & Fish': '#F44336', 'Dairy': '#2196F3', 'Rice & Grains': '#FF9800', 'Beverages': '#795548', 'Household': '#9C27B0', 'Personal Care': '#E91E63' };
+                var accentColor = catColors[offer.category] || '#D32F2F';
+
+                var imgHtml = '';
+                if (offer.image && offer.image.trim()) {
+                    imgHtml = '<img src="' + offer.image + '" alt="' + offer.title + '" ' +
+                        'style="width:100%;height:100%;object-fit:cover;" ' +
+                        'onerror="if(window.handleImageError) window.handleImageError(this);">';
+                } else {
+                    imgHtml = '<img src="img/logo.png" style="width:70%; opacity:0.15;filter:grayscale(100%)" alt="Multi Super">';
+                }
+
+                container.innerHTML = `
+                    <div class="offer-card anim" style="--accent: ${accentColor}; box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin: 0;">
+                        <div class="offer-badge-wrap">
+                            <div class="offer-save-badge">SAVE ${window.formatPrice(savings)}</div>
+                            ${offer.isHot ? '<div class="hot-tag">🔥 HOT</div>' : ''}
+                        </div>
+                        
+                        <div class="offer-image" style="position:relative;background:#f5f5f5;display:flex;align-items:center;justify-content:center;">
+                            ${imgHtml}
+                            <div class="offer-cat-pill">${offer.category}</div>
+                        </div>
+
+                        <div class="offer-details">
+                            <div class="offer-header">
+                                <h3 class="offer-title">${offer.title}</h3>
+                                <span class="offer-unit">${offer.unit}</span>
+                            </div>
+                            <p class="offer-desc">${offer.description}</p>
+                            
+                            <div class="offer-pricing-panel">
+                                <div class="price-main">
+                                    <span class="price-current">${window.formatPrice(offer.offerPrice)}</span>
+                                    <span class="price-was">Was ${window.formatPrice(offer.originalPrice)}</span>
+                                </div>
+                                <div class="price-discount-tag">${savingsPercent}% OFF</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
                 const card = container.querySelector('.offer-card');
                 if (card) {
                     card.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';

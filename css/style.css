@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * Multi Super 
  * Global Stylesheet
  * Everything You Need, Close to Home
@@ -3346,4 +3346,35 @@ p {
     background: #D32F2F;
     border-color: #D32F2F;
     color: #fff;
+}
+
+form input:focus, form select:focus, .calc-box input:focus, .calc-box select:focus {
+    outline: none;
+    border: 2px solid var(--color-primary) !important;
+}
+
+/* Responsive Helper Classes for Typography and Hero Grid */
+.welcome-subtitle {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: clamp(1rem, 4vw, 1.25rem);
+    margin-bottom: 15px;
+    opacity: 0.9;
+    text-align: center;
+    font-weight: 700;
+}
+
+.hero-split {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+}
+
+@media (max-width: 900px) {
+    .hero-split {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 20px;
+    }
 }

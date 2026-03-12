@@ -297,25 +297,36 @@
 
     <!-- Rates Calculator Section -->
     <div class="container">
-        <div class="calc-box anim">
-            <h3>Quick Rate Calculator</h3>
-            <p>Estimate the cost for any weight based on today's rates.</p>
+        <div class="calc-box anim"
+            style="background:#1a1a1a; color:#fff; border-radius:16px; border:1px solid rgba(255,255,255,0.1); padding:2rem; margin-bottom:3rem; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+            <h3 style="font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:0.5rem;">Quick Rate Calculator</h3>
+            <p style="font-size:0.9rem; color:#ccc; margin-bottom:1.5rem;">Check current rates instantly before you
+                shop.</p>
 
-            <div class="calc-inputs">
+            <div class="calc-inputs"
+                style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
                 <div class="form-group">
-                    <label>Select Item</label>
-                    <select id="calc-item" class="form-control">
+                    <label
+                        style="display:block; font-size:0.85rem; font-weight:600; color:#ccc; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.5px;">Select
+                        Product</label>
+                    <select id="calc-item" class="form-control"
+                        style="width:100%; padding:0.8rem 1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:#fff; font-size:1rem; outline:none; transition:border-color 0.3s;">
                         <!-- JS Populated -->
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Weight (kg)</label>
-                    <input type="number" id="calc-weight" class="form-control" value="1" step="0.1" min="0">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label
+                        style="display:block; font-size:0.85rem; font-weight:600; color:#ccc; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.5px;">Weight
+                        (kg)</label>
+                    <input type="number" id="calc-weight" class="form-control" value="1" step="0.1" min="0"
+                        style="width:100%; padding:0.8rem 1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:#fff; font-size:1rem; outline:none; transition:border-color 0.3s;">
                 </div>
             </div>
 
-            <div class="calc-result-wrap">
-                <span id="calc-result">Rs. 0.00</span>
+            <div class="calc-result-wrap" style="text-align:center;">
+                <div id="calc-result"
+                    style="font-size:2rem; font-weight:800; color:#4CAF50; padding:1.5rem; background:rgba(76,175,80,0.1); border-radius:12px; margin-top:2rem; display:inline-block; border:1px solid rgba(76,175,80,0.3); width:100%;">
+                    Rs. 0.00</div>
                 <p id="calc-summary" style="margin-top: 10px; font-size: 0.9rem; color: var(--color-text-muted);">
                     Select an item to start calculating
                 </p>
@@ -478,7 +489,8 @@
         <div class="footer-bottom">
             <div class="container">
                 <p> 2025 Multi Super. All rights reserved.</p>
-                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for presentation purposes only. Not the official Multi Super website.</p>
+                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for
+                    presentation purposes only. Not the official Multi Super website.</p>
                 <p>Developed by : M.ΛSHFΛQ JΛREED</p>
                 <div class="footer-legal">
                     <a href="about.html">Privacy Policy</a>

@@ -15,7 +15,7 @@
     <meta property="og:type" content="website">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://multi-super.web.app">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Multi Super : Branches</title>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="icon" type="image/png" href="img/favicon.png">
@@ -185,6 +185,60 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* FAQ Accordion */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .faq-item {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            overflow: hidden;
+            cursor: pointer;
+            border: 1.5px solid #F5F5F5;
+            transition: border-color 0.2s;
+        }
+        .faq-item.open {
+            border-color: #D32F2F;
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #212121;
+            user-select: none;
+        }
+        .faq-icon {
+            font-size: 1.4rem;
+            color: #D32F2F;
+            font-weight: 300;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+        }
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.25s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            color: #616161;
+            line-height: 1.7;
+            padding: 0 20px;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+            padding: 0 20px 18px;
+        }
     </style>
 
 </head>
@@ -317,37 +371,103 @@
         </div>
 
         <!-- Loyalty Card FAQ section -->
-        <div id="get-loyalty-card" class="anim" style="margin-bottom: 50px; scroll-margin-top: 100px;">
-            <div class="section-header" style="text-align: left; margin-bottom: 20px;">
-                <h3 style="font-size: 1.5rem; color: var(--color-primary);"><i class="fas fa-id-card"></i> Getting
-                    Your Free Loyalty Card</h3>
-            </div>
+<section id="get-loyalty-card" style="
+  max-width: 760px;
+  margin: 60px auto;
+  padding: 0 20px;
+">
+  <h2 style="
+    font-family: 'Cooper Black', serif;
+    font-size: 1.8rem;
+    color: #212121;
+    margin-bottom: 8px;
+    text-align: center;
+  ">Loyalty Card <span style="color:#D32F2F;">FAQ</span></h2>
+  <p style="
+    text-align: center;
+    color: #757575;
+    font-size: 0.92rem;
+    margin-bottom: 32px;
+    font-family: 'Inter', sans-serif;
+  ">Everything you need to know about your Multi Super Loyalty Card</p>
+  <div class="faq-list">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        <span>How do I get a Loyalty Card?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Visit any Multi Super branch and ask a cashier to register
+        your phone number. You can also sign up online through the
+        Sign Up page on this website. Registration is free and
+        takes less than a minute.
+      </div>
+    </div>
 
-            <div class="accordion">
-                <button class="accordion-btn">How do I get a Multi Super Loyalty Card?</button>
-                <div class="accordion-content">
-                    <p style="padding-top: 10px;">Simply visit the billing counter at any of our branches: Akurana,
-                        Katugastota, Warakamura, Mallawapitiya, or Wattala. Ask the cashier to sign you up for a new
-                        Loyalty Card. It's completely free!</p>
-                </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        <span>How do I earn points?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        You earn 1 point for every Rs. 10 spent at any Multi Super
+        branch. Points are added to your account automatically when
+        you give your phone number at the cashier.
+      </div>
+    </div>
 
-                <button class="accordion-btn">What information do I need to provide?</button>
-                <div class="accordion-content">
-                    <p style="padding-top: 10px;">We only require your active mobile phone number to register an
-                        account
-                        for you. Your phone number acts as your unique account ID, allowing you to sign into this
-                        website and check your balance later.</p>
-                </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        <span>What are the loyalty tiers?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        <strong>Bronze:</strong> 0 - 4,999 points<br>
+        <strong>Silver:</strong> 5,000 - 14,999 points — 3% bonus on selected items<br>
+        <strong>Gold:</strong> 15,000 - 29,999 points — 5% bonus + priority offers<br>
+        <strong>Platinum:</strong> 30,000+ points — 8% bonus + exclusive deals
+      </div>
+    </div>
 
-                <button class="accordion-btn">How do I earn points?</button>
-                <div class="accordion-content">
-                    <p style="padding-top: 10px;">Present your Loyalty Card (or tell the cashier your registered
-                        phone
-                        number) before paying your bill. You'll automatically earn 1 point for every Rs. 100 spent
-                        in-store.</p>
-                </div>
-            </div>
-        </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        <span>Can I use my card at all branches?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Yes. Your Multi Super Loyalty Card works at all 6 branches —
+        Akurana 7MP, Akurana 6MP, Katugastota, Warakamura,
+        Mallawapitiya, and Wattala. Your points are combined
+        across all branches.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        <span>How do I check my points balance?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Sign in to your account on this website to see your full
+        points balance, tier level, and transaction history.
+        You can also check your balance on the homepage by
+        entering your phone number in the loyalty check strip.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        <span>Do points expire?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Points are valid for 12 months from the date they were
+        earned. Points expire if there is no purchase activity
+        on your account for 12 consecutive months.
+      </div>
+    </div>
+  </div>
+</section>
     </div>
 
     <!-- Footer -->
@@ -589,6 +709,16 @@
                 }
             }
         }
+    </script>
+
+    <script>
+    function toggleFaq(item) {
+        var isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(function(el) {
+            el.classList.remove('open');
+        });
+        if (!isOpen) item.classList.add('open');
+    }
     </script>
 </body>
 

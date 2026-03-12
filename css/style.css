@@ -3378,3 +3378,261 @@ form input:focus, form select:focus, .calc-box input:focus, .calc-box select:foc
         gap: 20px;
     }
 }
+
+/* =====================
+   MOBILE RESPONSIVE
+   ===================== */
+@media (max-width: 768px) {
+    /* Header */
+    .site-header {
+        padding: 0;
+    }
+    .header-main .container {
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        gap: 10px;
+    }
+    .header-search {
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+    }
+    .header-search input {
+        width: 100%;
+        font-size: 0.85rem;
+    }
+    .header-actions {
+        gap: 8px;
+    }
+    .header-actions .btn {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+    .header-nav {
+        display: none;
+    }
+    /* Nav — mobile burger menu */
+    .nav-mobile-open .header-nav {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 80vw;
+        max-width: 300px;
+        height: 100vh;
+        background: #fff;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+        z-index: 2000;
+        padding: 80px 24px 24px;
+        overflow-y: auto;
+    }
+    .nav-mobile-open .header-nav .container {
+        flex-direction: column;
+        gap: 0;
+    }
+    .nav-mobile-open .header-nav .nav-link {
+        display: block;
+        padding: 14px 0;
+        border-bottom: 1px solid #F5F5F5;
+        font-size: 1rem;
+    }
+    /* Hero */
+    .page-hero {
+        min-height: auto !important;
+        padding: 80px 20px 40px !important;
+    }
+    .hero-split {
+        grid-template-columns: 1fr !important;
+        text-align: center;
+        gap: 20px;
+    }
+    .hero-split h1 {
+        font-size: 2.2rem !important;
+    }
+    .hero-split p {
+        font-size: 0.92rem !important;
+        max-width: 100% !important;
+    }
+    .hero-split .flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    .hero-split .btn {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
+    }
+    #hero-offer-card,
+    .offer-card {
+        max-width: 90vw;
+    }
+    /* Category grid */
+    .category-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px;
+        padding: 0 16px;
+    }
+    .category-img-wrap,
+    .category-circle {
+        width: 80px;
+        height: 80px;
+    }
+    .category-label {
+        font-size: 0.75rem;
+    }
+    /* Welcome section */
+    .welcome-subtitle {
+        font-size: 1rem !important;
+    }
+    /* Offers slider */
+    .offers-slider,
+    .offers-scroll {
+        gap: 14px;
+        padding: 12px 16px 20px;
+    }
+    .offer-card {
+        min-width: 220px !important;
+        max-width: 240px;
+    }
+    /* Footer */
+    .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 32px;
+        padding: 32px 20px;
+    }
+    .footer-branches-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .footer-newsletter .container {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    .newsletter-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .newsletter-form input,
+    .newsletter-form button,
+    .newsletter-input,
+    .newsletter-btn {
+        width: 100%;
+        border-radius: 10px;
+    }
+    /* Sections general */
+    .section-container,
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    /* Rate calculator */
+    .rate-calculator,
+    .calc-box {
+        margin: 24px 16px;
+        padding: 24px 20px;
+    }
+    .rate-calc-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+    /* Branch cards */
+    .branches-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px;
+        padding: 0 16px;
+    }
+    /* Login page */
+    .login-container {
+        padding: 24px 16px;
+    }
+    .login-box {
+        margin: 20px 16px !important;
+    }
+    /* Account page */
+    .account-grid {
+        grid-template-columns: 1fr;
+    }
+    /* Chatbot */
+    #malee-trigger {
+        left: 12px;
+        bottom: 12px;
+    }
+    #malee-window {
+        width: calc(100vw - 24px) !important;
+        max-width: 360px;
+        left: 12px !important;
+    }
+    /* Scroll to top */
+    #scroll-top-btn {
+        right: 12px;
+        bottom: 12px;
+    }
+    /* Branch filter toggle */
+    #branch-filter-toggle {
+        top: auto;
+        bottom: 80px;
+    }
+    /* Tables */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    /* Maps */
+    .branch-map-search {
+        max-width: 100%;
+    }
+    #map-branch-pills {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+    }
+    /* Page hero text */
+    .page-hero h1 {
+        font-size: 2rem !important;
+    }
+    .page-hero p {
+        font-size: 0.9rem !important;
+    }
+    /* Pamphlet page */
+    .pamphlet-grid {
+        grid-template-columns: 1fr !important;
+    }
+    /* Products page */
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+    }
+    /* Stock page */
+    .stock-grid {
+        grid-template-columns: 1fr !important;
+    }
+    /* Search results */
+    #results-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-hero h1,
+    .hero-split h1 {
+        font-size: 1.8rem !important;
+    }
+    .category-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12px;
+    }
+    .offer-card {
+        min-width: 200px !important;
+    }
+    .footer-branches-grid {
+        grid-template-columns: 1fr;
+    }
+    .products-grid,
+    #results-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

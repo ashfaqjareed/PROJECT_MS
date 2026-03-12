@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,7 +15,7 @@
     <meta property="og:type" content="website">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://multi-super.web.app">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Multi Super : Pamphlet</title>
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="icon" type="image/png" href="img/favicon.png">
@@ -393,6 +393,15 @@
                 <p style="margin-top: 25px; font-size: 0.9rem; color: var(--color-text-muted);">
                     Join <strong>4,250</strong> customers already receiving our weekly pamphlet.
                 </p>
+                <div id="emailjs-success-msg"
+                    style="display:none; margin-top:14px; padding:12px 18px; background:#E8F5E9; color:#2E7D32; border-radius:8px; font-size:0.9rem;">
+                    <i class="fas fa-check-circle"></i> Confirmation email sent to your inbox!
+                </div>
+                <div id="emailjs-error-msg"
+                    style="display:none; margin-top:14px; padding:12px 18px; background:#FFEBEE; color:#C62828; border-radius:8px; font-size:0.9rem;">
+                    <i class="fas fa-exclamation-triangle"></i> Could not send confirmation email. You're still
+                    subscribed.
+                </div>
             </div>
 
             <div id="signup-success" class="success-state">
@@ -557,7 +566,8 @@
         <div class="footer-bottom">
             <div class="container">
                 <p> &copy; 2025 Multi Super. All rights reserved.</p>
-                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for presentation purposes only. Not the official Multi Super website.</p>
+                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for
+                    presentation purposes only. Not the official Multi Super website.</p>
                 <p>Developed by : M.ΛSHFΛQ JΛREED</p>
                 <div class="footer-legal">
                     <a href="about.html">Privacy Policy</a>
@@ -569,6 +579,8 @@
 
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             renderSamplePamphlet();
@@ -607,6 +619,11 @@
             if (!form) return;
             const btn = form.querySelector('button[type="submit"]');
 
+            // Initialize EmailJS with your public key
+            if (window.emailjs) {
+                emailjs.init('YdX3pbPEK2cKs4jIi6SXKs');
+            }
+
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
@@ -614,6 +631,12 @@
                 const originalBtnText = btn.innerHTML;
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+
+                // Hide previous messages
+                var successMsg = document.getElementById('emailjs-success-msg');
+                var errorMsg = document.getElementById('emailjs-error-msg');
+                if (successMsg) successMsg.style.display = 'none';
+                if (errorMsg) errorMsg.style.display = 'none';
 
                 const data = {
                     name: document.getElementById('p-name').value,
@@ -626,6 +649,22 @@
                     // Push to Firestore if firebase is loaded and initialized
                     if (window.db) {
                         await db.collection('pamphlet_subscribers').add(data);
+                    }
+
+                    // Send confirmation email via EmailJS
+                    if (window.emailjs) {
+                        try {
+                            await emailjs.send('service_8boidni', 'template_halq00o', {
+                                to_name: data.name,
+                                to_email: data.email,
+                                branch: data.branch,
+                                message: 'Thank you for subscribing to the Multi Super weekly pamphlet! You will receive offers for the ' + data.branch + ' branch every Sunday evening.'
+                            });
+                            if (successMsg) successMsg.style.display = 'block';
+                        } catch (emailErr) {
+                            console.warn('EmailJS send failed:', emailErr);
+                            if (errorMsg) errorMsg.style.display = 'block';
+                        }
                     }
 
                     // Show success

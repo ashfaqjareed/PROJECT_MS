@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -441,8 +441,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="
-              var v=document.getElementById('footer-email-input').value;
+                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
               if(v&&v.includes('@')){
                 showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
                 document.getElementById('footer-email-input').value='';
@@ -627,6 +626,17 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                // Authentication Guard
+                if (typeof window.getUser === 'function' && !window.getUser()) {
+                    if (window.showToast) {
+                        window.showToast('Please Login or Sign Up to subscribe for the pamphlet!', 'warning');
+                    }
+                    setTimeout(() => {
+                        window.location.href = 'login.html?redirect=pamphlet.html';
+                    }, 2000);
+                    return;
+                }
+
                 // Disable button and show loading state
                 const originalBtnText = btn.innerHTML;
                 btn.disabled = true;
@@ -677,7 +687,7 @@
                 } catch (error) {
                     console.error("Error subscribing to pamphlet: ", error);
                     if (window.showToast) {
-                        window.showToast("Failed to subscribe. Please try again.", "error");
+                        window.showToast("Failed to subscribe. Please Try Again Later.", "error");
                     }
                     // Reset button state on error
                     btn.disabled = false;

@@ -231,6 +231,7 @@ function doSignUp() {
                 name: name,
                 phone: fullPhone,
                 email: email,
+                pin: pin, // Store PIN in Firestore
                 cardNumber: cardNumber,
                 memberSince: new Date().toISOString().split('T')[0],
                 tier: 'Bronze',
@@ -451,6 +452,7 @@ window.handleRegister = async (data) => {
             name: name,
             phone: fullPhone,
             email: email || authEmail,
+            pin: pin, // Store PIN in Firestore
             cardNumber: cardNumber,
             memberSince: new Date().toISOString().split('T')[0],
             tier: 'Bronze',
@@ -597,49 +599,39 @@ window.formatDate = (dateStr) => {
 };
 
 // --- 4. RATE CALCULATOR ---
+// --- 4. RATE CALCULATOR ---
 window.initRateCalc = (ratesSource = window.PRODUCT_RATES) => {
     const productSelect = document.getElementById('calc-product');
     const qtyInput = document.getElementById('calc-qty');
     const unitLabel = document.getElementById('calc-unit');
     const resultDiv = document.getElementById('calc-result');
-    const resetBtn = document.getElementById('calc-reset');
+    const summaryDiv = document.getElementById('calc-summary');
 
     if (!productSelect || !qtyInput || !resultDiv) return;
 
     // Populate select
-    productSelect.innerHTML = '<option value="" disabled selected>Select an item...</option>';
-    ratesSource.forEach(prod => {
-        const opt = document.createElement('option');
-        opt.value = prod.name;
-        opt.textContent = prod.name;
-        productSelect.appendChild(opt);
-    });
+    const sortedRates = [...(ratesSource || [])].sort((a,b) => a.name.localeCompare(b.name));
+    productSelect.innerHTML = '<option value="" disabled selected>— Choose an item —</option>' + 
+        sortedRates.map(p => `<option value="${p.id}" data-price="${p.price}" data-unit="${p.unit}">${p.name}</option>`).join('');
 
     const calculate = () => {
-        const productName = productSelect.value;
-        const qty = parseFloat(qtyInput.value) || 0;
-        const product = ratesSource.find(p => p.name === productName);
+        const opt = productSelect.options[productSelect.selectedIndex];
+        if (!opt || !opt.value) return;
 
-        if (product) {
-            if (unitLabel) unitLabel.textContent = `per ${product.unit}`;
-            const total = product.price * qty;
-            resultDiv.classList.remove('visible');
-            setTimeout(() => {
-                resultDiv.textContent = window.formatPrice(total);
-                resultDiv.classList.add('visible');
-            }, 50);
+        const price = parseFloat(opt.dataset.price);
+        const unit = opt.dataset.unit;
+        const qty = parseFloat(qtyInput.value) || 0;
+        const total = price * qty;
+
+        if (unitLabel) unitLabel.textContent = unit;
+        
+        resultDiv.textContent = window.formatPrice(total);
+        resultDiv.classList.add('visible');
+
+        if (summaryDiv) {
+            summaryDiv.textContent = `${qty} ${unit} of ${opt.text} at ${window.formatPrice(price)}/${unit}`;
         }
     };
-
-    if (resetBtn) {
-        resetBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            productSelect.selectedIndex = 0;
-            qtyInput.value = 1;
-            if (unitLabel) unitLabel.textContent = "unit";
-            resultDiv.textContent = "Rs. 0.00";
-        });
-    }
 
     productSelect.addEventListener('change', calculate);
     qtyInput.addEventListener('input', calculate);
@@ -1012,30 +1004,66 @@ window.addChatMessage = (text, sender) => {
 };
 
 // --- HERO OFFERS ROTATOR ---
+let heroRotatorInterval;
 window.initHeroRotator = () => {
-    const rotatorBtn = document.getElementById('hero-offer-rotator');
-    if (!rotatorBtn) return;
+    const container = document.getElementById('hero-offer-rotator');
+    const dotsContainer = document.getElementById('hero-offer-dots');
+    if (!container || !window.WEEKLY_OFFERS || !window.WEEKLY_OFFERS.length) return;
 
-    let offers = [];
-    if (window.WEEKLY_OFFERS) offers = window.WEEKLY_OFFERS.slice(0, 5); // Top 5 for hero
-    if (!offers.length) return;
-
+    const offers = window.WEEKLY_OFFERS.slice(0, 5);
     let currentIndex = 0;
 
-    const renderHeroCard = (offer) => {
-        rotatorBtn.innerHTML = window.buildOfferCard(offer);
-        rotatorBtn.style.transform = 'rotate(3deg) scale(1.05)';
-        setTimeout(() => {
-            rotatorBtn.style.transform = 'rotate(3deg) scale(1)';
-        }, 300);
-    };
+    function renderCard(index) {
+        const offer = offers[index];
+        container.innerHTML = window.buildOfferCard(offer);
+        
+        // Apply hero-specific styles to the card
+        const card = container.querySelector('.offer-card');
+        if (card) {
+            card.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';
+            card.style.margin = '0';
+            card.style.transform = 'rotate(3deg)';
+        }
 
-    renderHeroCard(offers[currentIndex]);
+        // Update dots
+        if (dotsContainer) {
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.style.background = i === index ? '#fff' : 'rgba(255,255,255,0.5)';
+            });
+        }
+    }
 
-    setInterval(() => {
+    // Create dots if container exists
+    if (dotsContainer) {
+        dotsContainer.innerHTML = offers.map((_, i) =>
+            `<div class="dot" data-index="${i}" style="width: 10px; height: 10px; border-radius: 50%; background: ${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'}; cursor: pointer; transition: background 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`
+        ).join('');
+
+        dotsContainer.querySelectorAll('.dot').forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                currentIndex = parseInt(e.target.dataset.index);
+                renderCard(currentIndex);
+                resetInterval();
+            });
+        });
+    }
+
+    function nextHero() {
         currentIndex = (currentIndex + 1) % offers.length;
-        renderHeroCard(offers[currentIndex]);
-    }, 4000);
+        renderCard(currentIndex);
+    }
+
+    function resetInterval() {
+        clearInterval(heroRotatorInterval);
+        heroRotatorInterval = setInterval(nextHero, 5000);
+    }
+
+    container.addEventListener('mouseenter', () => clearInterval(heroRotatorInterval));
+    container.addEventListener('mouseleave', resetInterval);
+
+    renderCard(currentIndex);
+    resetInterval();
 };
 
 // --- HOT OFFERS GRID ---

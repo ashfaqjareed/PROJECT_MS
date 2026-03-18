@@ -297,37 +297,45 @@
 
     <!-- Rates Calculator Section -->
     <div class="container">
-        <div class="calc-box anim"
-            style="background:#1a1a1a; color:#fff; border-radius:16px; border:1px solid rgba(255,255,255,0.1); padding:2rem; margin-bottom:3rem; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
-            <h3 style="font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:0.5rem;">Quick Rate Calculator</h3>
-            <p style="font-size:0.9rem; color:#ccc; margin-bottom:1.5rem;">Check current rates instantly before you
-                shop.</p>
-
-            <div class="calc-inputs"
-                style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
-                <div class="form-group">
-                    <label
-                        style="display:block; font-size:0.85rem; font-weight:600; color:#ccc; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.5px;">Select
-                        Product</label>
-                    <select id="calc-item" class="form-control"
-                        style="width:100%; padding:0.8rem 1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:#fff; font-size:1rem; outline:none; transition:border-color 0.3s;">
-                        <!-- JS Populated -->
-                    </select>
+        <div class="calc-box glass-pill anim"
+            style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); color: var(--color-text); border-radius: 24px; border: 1px solid var(--color-border); padding: 2.5rem; margin-bottom: 3.5rem; box-shadow: var(--shadow-lg); transition: transform 0.3s ease;">
+            <div class="flex justify-between align-center mb-6">
+                <div>
+                    <h3 style="font-size: 1.75rem; font-weight: 800; color: var(--color-accent-dark); margin-bottom: 0.25rem;">Rate Calculator</h3>
+                    <p style="font-size: 0.95rem; color: var(--color-text-muted);">Check current prices across all essentials.</p>
                 </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label
-                        style="display:block; font-size:0.85rem; font-weight:600; color:#ccc; margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.5px;">Weight
-                        (kg)</label>
-                    <input type="number" id="calc-weight" class="form-control" value="1" step="0.1" min="0"
-                        style="width:100%; padding:0.8rem 1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:#fff; font-size:1rem; outline:none; transition:border-color 0.3s;">
+                <div style="width: 50px; height: 50px; background: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center; border-radius: 14px; font-size: 1.5rem;">
+                    <i class="fas fa-calculator"></i>
                 </div>
             </div>
 
-            <div class="calc-result-wrap" style="text-align:center;">
+            <div class="calc-inputs"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div class="form-group">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Toggle Product</label>
+                    <div style="position: relative;">
+                        <select id="calc-product" class="form-control"
+                             style="width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid var(--color-border); background: #fff; color: var(--color-text); font-size: 1rem; font-weight: 600; outline: none; appearance: none; cursor: pointer; transition: border-color 0.2s;">
+                            <!-- JS Populated -->
+                        </select>
+                        <i class="fas fa-chevron-down" style="position: absolute; right: 15px; top: 18px; pointer-events: none; color: var(--color-text-muted);"></i>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Quantity</label>
+                    <div style="position: relative;">
+                        <input type="number" id="calc-qty" class="form-control" value="1" step="0.1" min="0"
+                            style="width: 100%; padding: 1rem 3.5rem 1rem 1rem; border-radius: 12px; border: 2px solid var(--color-border); background: #fff; color: var(--color-text); font-size: 1.1rem; font-weight: 700; outline: none; transition: border-color 0.2s;">
+                        <span id="calc-unit" style="position: absolute; right: 15px; top: 16px; font-weight: 700; color: var(--color-primary); font-size: 0.9rem;">kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calc-result-wrap" style="text-align: center;">
                 <div id="calc-result"
-                    style="font-size:2rem; font-weight:800; color:#4CAF50; padding:1.5rem; background:rgba(76,175,80,0.1); border-radius:12px; margin-top:2rem; display:inline-block; border:1px solid rgba(76,175,80,0.3); width:100%;">
+                    style="font-size: 2.75rem; font-weight: 900; color: var(--color-success); padding: 1.5rem; background: rgba(22, 163, 74, 0.05); border-radius: 16px; margin-top: 2rem; display: block; border: 2px dashed rgba(22, 163, 74, 0.3);">
                     Rs. 0.00</div>
-                <p id="calc-summary" style="margin-top: 10px; font-size: 0.9rem; color: var(--color-text-muted);">
+                <p id="calc-summary" style="margin-top: 1rem; font-size: 1rem; font-weight: 600; color: var(--color-text-muted); padding: 10px; border-radius: 8px; background: var(--color-bg-alt);">
                     Select an item to start calculating
                 </p>
             </div>
@@ -364,8 +372,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="
-              var v=document.getElementById('footer-email-input').value;
+                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
               if(v&&v.includes('@')){
                 showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
                 document.getElementById('footer-email-input').value='';
@@ -508,14 +515,15 @@
         document.addEventListener('firebaseDataLoaded', () => {
             updateUpdateDate();
             initRateTabs();
-            initCalculator();
             renderRates();
+            if (window.initRateCalc) window.initRateCalc();
         });
 
         function updateUpdateDate() {
             const today = new Date();
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('update-date').textContent = `Prices updated as of ${today.toLocaleDateString('en-GB', options)}`;
+            const el = document.getElementById('update-date');
+            if (el) el.textContent = `Prices updated as of ${today.toLocaleDateString('en-GB', options)}`;
         }
 
         function initRateTabs() {
@@ -528,36 +536,6 @@
                     renderRates();
                 });
             });
-        }
-
-        function initCalculator() {
-            const select = document.getElementById('calc-item');
-            const weightInput = document.getElementById('calc-weight');
-            const resultDisplay = document.getElementById('calc-result');
-            const summaryDisplay = document.getElementById('calc-summary');
-
-            // Sort products alphabetically for the dropdown
-            const sortedRates = [...window.PRODUCT_RATES].sort((a, b) => a.name.localeCompare(b.name));
-
-            select.innerHTML = '<option value="" disabled selected>— Choose an item —</option>' +
-                sortedRates.map(p => `<option value="${p.id}" data-price="${p.price}" data-unit="${p.unit}">${p.name}</option>`).join('');
-
-            const updateCalc = () => {
-                const opt = select.options[select.selectedIndex];
-                if (!opt || !opt.value) return;
-
-                const price = parseFloat(opt.dataset.price);
-                const unit = opt.dataset.unit;
-                const weight = parseFloat(weightInput.value) || 0;
-                const total = price * weight;
-
-                resultDisplay.textContent = `Rs. ${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                resultDisplay.classList.add('visible');
-                summaryDisplay.textContent = `${weight} ${unit} of ${opt.text} at Rs. ${price}/${unit}`;
-            };
-
-            select.addEventListener('change', updateCalc);
-            weightInput.addEventListener('input', updateCalc);
         }
 
         function renderRates() {

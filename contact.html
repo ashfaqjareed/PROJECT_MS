@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="description"
-        content="Multi Super — Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
+        content="Multi Super � Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
     <meta name="keywords"
         content="Multi Super, supermarket Sri Lanka, Akurana supermarket, Kandy supermarket, grocery Sri Lanka, fresh produce Kandy">
     <meta name="author" content="Multi Super">
-    <meta property="og:title" content="Multi Super — Everything You Need, Close to Home">
+    <meta property="og:title" content="Multi Super � Everything You Need, Close to Home">
     <meta property="og:description"
         content="Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices every week.">
     <meta property="og:url" content="https://multi-super.web.app">
@@ -208,7 +208,7 @@
 </head>
 
 <body>
-    <button class="header-toggle-btn" id="header-toggle" aria-label="Show navigation">☰</button>
+    <button class="header-toggle-btn" id="header-toggle" aria-label="Show navigation">?</button>
     <!-- Desktop Site Notice -->
     <div class="desktop-notice">Best viewed on a desktop monitor for the full regional experience.</div>
 
@@ -219,7 +219,7 @@
 
     <div id="malee-window" class="chatbot-window">
         <div class="chatbot-header">
-            <span>Malee — Multi Super AI</span>
+            <span>Malee � Multi Super AI</span>
             <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
         </div>
         <div id="malee-messages" class="chatbot-messages">
@@ -308,7 +308,7 @@
     <header class="page-hero" style="padding-bottom: 80px;">
         <div class="container text-center">
             <h1 class="anim">Contact Us</h1>
-            <p class="anim">We'd love to hear from you â€” reach out anytime.</p>
+            <p class="anim">We'd love to hear from you — reach out anytime.</p>
         </div>
     </header>
 
@@ -416,7 +416,7 @@
                 <button class="accordion-btn">How do I get a Loyalty Card? <i
                         class="fas fa-chevron-down chevron"></i></button>
                 <div class="accordion-body">
-                    <p>Simply visit any Multi Super branch and ask at the counter. It's completely free â€” all you need
+                    <p>Simply visit any Multi Super branch and ask at the counter. It's completely free — all you need
                         is your phone number. You'll start earning points on your very first purchase.</p>
                 </div>
             </div>
@@ -480,8 +480,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="
-              var v=document.getElementById('footer-email-input').value;
+                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
               if(v&&v.includes('@')){
                 showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
                 document.getElementById('footer-email-input').value='';
@@ -607,7 +606,7 @@
                 <p> &copy; 2025 Multi Super. All rights reserved.</p>
                 <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for
                     presentation purposes only. Not the official Multi Super website.</p>
-                <p>Developed by : M.ΛSHFΛQ JΛREED</p>
+                <p>Developed by : M.?SHF?Q J?REED</p>
                 <div class="footer-legal">
                     <a href="about.html">Privacy Policy</a>
                     <a href="about.html">Terms of Use</a>

@@ -177,8 +177,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="
-              var v=document.getElementById('footer-email-input').value;
+                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
               if(v&&v.includes('@')){
                 showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
                 document.getElementById('footer-email-input').value='';
@@ -336,11 +335,6 @@
                 showToast('Please enter both phone and PIN', 'error');
                 return;
             }
-            // Clear form fields before redirect
-            var phoneInput = document.getElementById('login-phone');
-            var pinInput = document.getElementById('login-pin');
-            if (phoneInput) phoneInput.value = '';
-            if (pinInput) pinInput.value = '';
             await window.handleLogin(phone, pin);
         }
 
@@ -354,14 +348,6 @@
                 showToast('Name, phone and PIN are required', 'error');
                 return;
             }
-
-            // Clear form fields before redirect
-            var nameInput = document.getElementById('reg-name');
-            var suPhone = document.getElementById('reg-phone');
-            var suPin = document.getElementById('reg-pin');
-            if (nameInput) nameInput.value = '';
-            if (suPhone) suPhone.value = '';
-            if (suPin) suPin.value = '';
 
             const data = { name, phone, email, pin };
             await window.handleRegister(data);

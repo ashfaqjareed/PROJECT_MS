@@ -506,8 +506,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="
-              var v=document.getElementById('footer-email-input').value;
+                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
               if(v&&v.includes('@')){
                 showToast('? You are subscribed! Expect your first pamphlet this Sunday.','success');
                 document.getElementById('footer-email-input').value='';
@@ -651,110 +650,7 @@
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
     <script>
-        let heroInterval;
-        function initHeroRotator() {
-            const container = document.getElementById('hero-offer-rotator');
-            const dotsContainer = document.getElementById('hero-offer-dots');
-            if (!container || !window.WEEKLY_OFFERS || !window.WEEKLY_OFFERS.length) return;
-
-            const offers = window.WEEKLY_OFFERS.slice(0, 5);
-            if (offers.length === 0) return;
-
-            let currentIndex = 0;
-
-            function renderCard(index) {
-                var offer = offers[index];
-                var savings = offer.originalPrice - offer.offerPrice;
-                var savingsPercent = Math.round((savings / offer.originalPrice) * 100);
-                var catColors = { 'Fresh Produce': '#4CAF50', 'Meat & Fish': '#F44336', 'Dairy': '#2196F3', 'Rice & Grains': '#FF9800', 'Beverages': '#795548', 'Household': '#9C27B0', 'Personal Care': '#E91E63' };
-                var accentColor = catColors[offer.category] || '#D32F2F';
-
-                var imgHtml = '';
-                if (offer.image && offer.image.trim()) {
-                    imgHtml = '<img src="' + offer.image + '" alt="' + offer.title + '" ' +
-                        'style="width:100%;height:100%;object-fit:cover;" ' +
-                        'onerror="if(window.handleImageError) window.handleImageError(this);">';
-                } else {
-                    imgHtml = '<img src="img/logo.png" style="width:70%; opacity:0.15;filter:grayscale(100%)" alt="Multi Super">';
-                }
-
-                container.innerHTML = `
-                    <div class="offer-card anim" style="--accent: ${accentColor}; box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin: 0;">
-                        <div class="offer-badge-wrap">
-                            <div class="offer-save-badge">SAVE ${window.formatPrice(savings)}</div>
-                            ${offer.isHot ? '<div class="hot-tag">🔥 HOT</div>' : ''}
-                        </div>
-                        
-                        <div class="offer-image" style="position:relative;background:#f5f5f5;display:flex;align-items:center;justify-content:center;">
-                            ${imgHtml}
-                            <div class="offer-cat-pill">${offer.category}</div>
-                        </div>
-
-                        <div class="offer-details">
-                            <div class="offer-header">
-                                <h3 class="offer-title">${offer.title}</h3>
-                                <span class="offer-unit">${offer.unit}</span>
-                            </div>
-                            <p class="offer-desc">${offer.description}</p>
-                            
-                            <div class="offer-pricing-panel">
-                                <div class="price-main">
-                                    <span class="price-current">${window.formatPrice(offer.offerPrice)}</span>
-                                    <span class="price-was">Was ${window.formatPrice(offer.originalPrice)}</span>
-                                </div>
-                                <div class="price-discount-tag">${savingsPercent}% OFF</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                const card = container.querySelector('.offer-card');
-                if (card) {
-                    card.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';
-                    card.style.margin = '0';
-                }
-                const dots = dotsContainer.querySelectorAll('.dot');
-                dots.forEach((dot, i) => {
-                    dot.style.background = i === index ? '#fff' : 'rgba(255,255,255,0.5)';
-                });
-            }
-
-            // Create dots
-            if (dotsContainer) {
-                dotsContainer.innerHTML = offers.map((_, i) =>
-                    `<div class="dot" data-index="${i}" style="width: 10px; height: 10px; border-radius: 50%; background: ${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'}; cursor: pointer; transition: background 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`
-                ).join('');
-
-                dotsContainer.querySelectorAll('.dot').forEach(dot => {
-                    dot.addEventListener('click', (e) => {
-                        currentIndex = parseInt(e.target.dataset.index);
-                        renderCard(currentIndex);
-                        resetInterval();
-                    });
-                });
-            }
-
-            function nextCard() {
-                currentIndex = (currentIndex + 1) % offers.length;
-                renderCard(currentIndex);
-            }
-
-            function resetInterval() {
-                clearInterval(heroInterval);
-                heroInterval = setInterval(nextCard, 5000);
-            }
-
-            container.addEventListener('mouseenter', () => clearInterval(heroInterval));
-            container.addEventListener('mouseleave', resetInterval);
-
-            renderCard(currentIndex);
-            resetInterval();
-        }
-
-        document.addEventListener('DOMContentLoaded', initHeroRotator);
-
         document.addEventListener('firebaseDataLoaded', () => {
-            initHeroRotator();
             renderDynamicContent();
 
             // Re-render when branch changes
@@ -815,6 +711,11 @@
         }
 
         function handlePamphletSignup() {
+            if (!window.getUser()) {
+                window.showToast('Please Login or Sign Up to subscribe for offers!', 'warning');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
             const input = document.getElementById('pamphlet-email');
             const email = input.value.trim();
             if (!email || !email.includes('@')) {

@@ -3889,7 +3889,7 @@ form select:focus,
 .login-box .form-group label {
     display: block;
     font-size: 0.82rem;
-    font-weight: 200;
+    font-weight: 600;
     color: #424242;
     margin-bottom: 6px;
     text-transform: uppercase;

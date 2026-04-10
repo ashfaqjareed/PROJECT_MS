@@ -62,7 +62,7 @@
             <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
         </div>
         <div id="malee-messages" class="chatbot-messages">
-            <div class="chat-msg bot">Ayubowan! ðŸ™ I'm Malee, your friendly Multi Super AI. What can I help you with
+            <div class="chat-msg bot">Ayubowan! I'm Malee, your friendly Multi Super AI. What can I help you with
                 today?</div>
             <div class="quick-replies">
                 <button onclick="window.sendMaleeMessage('Branches')">ðŸª Branches</button>
@@ -75,23 +75,6 @@
         </div>
         <div class="chatbot-input">
             <input type="text" id="malee-input" placeholder="Ask me anything..."
-                onkeypress="if(event.key === 'Enter') window.sendMaleeMessage()">
-            <button onclick="window.sendMaleeMessage()"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <div id="malee-window" class="chatbot-window">
-        <div class="chatbot-header">
-            <span>Malee â€” Multi Super AI</span>
-            <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
-        </div>
-        <div id="malee-messages" class="chatbot-messages">
-            <div class="chat-msg bot">Hi! I'm Malee. How can I help you today? You can ask me about our
-                branches,
-                offers, or loyalty points!</div>
-        </div>
-        <div class="chatbot-input">
-            <input type="text" id="malee-input" placeholder="Type a message..."
                 onkeypress="if(event.key === 'Enter') window.sendMaleeMessage()">
             <button onclick="window.sendMaleeMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
@@ -175,19 +158,21 @@
             <!-- Not Logged In -->
             <div id="auth-placeholder" class="text-center" style="max-width: 600px; margin: 0 auto; display: block;">
                 <div class="card p-4">
-                    <div style="font-size: 4rem; margin-bottom: 24px;">ðŸ›¡ï¸</div>
-                    <h2 style="margin-bottom: 16px;">Access Your Account</h2>
-                    <p style="color: var(--color-text-muted); margin-bottom: 32px;">Enter your registered phone
-                        number
-                        to view your points, tier status, and transaction history.</p>
+                    <div style="font-size: 4rem; margin-bottom: 24px;">&#128737;</div>
+                    <h2 style="margin-bottom: 16px;">Access Your Loyalty Account</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 32px;">Sign in or create an account to
+                        view your points, tier status, and transaction history.</p>
 
-                    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-                        <input type="tel" id="login-phone" class="form-input" placeholder="e.g. 0771234567"
-                            style="flex: 1;">
-                        <button onclick="handleLogin()" class="btn btn-primary">Login Now</button>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <a href="login.html?redirect=loyalty.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                        <a href="login.html?tab=signup&redirect=loyalty.html" class="btn btn-outline btn-lg">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </a>
                     </div>
 
-                    <p style="font-size: 0.9rem;">New to Multi Super? Get your card at any branch checkout
+                    <p style="font-size: 0.9rem; margin-top: 24px; color: var(--color-text-muted);">New to Multi Super? Get your loyalty card at any branch checkout
                         counter.</p>
                 </div>
             </div>
@@ -396,7 +381,8 @@
         <div class="footer-bottom">
             <div class="container">
                 <p> &copy; 2025 Multi Super. All rights reserved.</p>
-                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for presentation purposes only. Not the official Multi Super website.</p>
+                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for
+                    presentation purposes only. Not the official Multi Super website.</p>
                 <p>Developed by : M.ΛSHFΛQ JΛREED</p>
                 <div class="footer-legal">
                     <a href="about.html">Privacy Policy</a>
@@ -434,17 +420,6 @@
             }
         }
 
-        function handleLogin() {
-            const phone = document.getElementById('login-phone').value;
-            if (!phone) {
-                window.showToast('Please enter your phone number', 'error');
-                return;
-            }
-            if (window.loginWithPhone(phone)) {
-                checkAuth();
-            }
-        }
-
         function handleLogout() {
             window.logoutUser();
             checkAuth();
@@ -461,18 +436,22 @@
 
             // History
             const histContainer = document.getElementById('transaction-history');
-            histContainer.innerHTML = user.history.map(h => `
-                <div class="flex justify-between align-center p-3" style="border-bottom: 1px solid var(--color-border);">
-                    <div>
-                        <div style="font-weight: 700;">${h.branch}</div>
-                        <div style="font-size: 0.8rem; color: var(--color-text-muted);">${window.formatDate(h.date)}</div>
+            if (user.history && user.history.length) {
+                histContainer.innerHTML = user.history.map(h => `
+                    <div class="flex justify-between align-center p-3" style="border-bottom: 1px solid var(--color-border);">
+                        <div>
+                            <div style="font-weight: 700;">${h.branch}</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-muted);">${window.formatDate(h.date)}</div>
+                        </div>
+                        <div class="text-right">
+                            <div style="font-weight: 700; color: var(--color-primary);">${window.formatPrice(h.amount)}</div>
+                            <div style="font-size: 0.8rem; color: var(--color-accent);">+${h.points} pts</div>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <div style="font-weight: 700; color: var(--color-primary);">${window.formatPrice(h.amount)}</div>
-                        <div style="font-size: 0.8rem; color: var(--color-accent);">+${h.points} pts</div>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            } else {
+                histContainer.innerHTML = '<div class="p-3 text-center" style="color:var(--color-text-muted);">No transactions yet. Start shopping to earn points!</div>';
+            }
 
             // Perks
             const perksContainer = document.getElementById('tier-perks');
@@ -488,15 +467,6 @@
                     <span style="font-weight: 600; font-size: 0.9rem;">${p.text}</span>
                 </div>
             `).join('');
-        }
-
-        function showLoginPrompt() {
-            const placeholder = document.getElementById('auth-placeholder');
-            if (placeholder.style.display === 'block') {
-                document.getElementById('login-phone').focus();
-            } else {
-                window.showToast('You are already logged in!', 'info');
-            }
         }
     </script>
 </body>

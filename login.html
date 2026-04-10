@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -59,25 +59,26 @@
                 <div class="header-actions">
                     <div class="header-account-wrap">
                         <!-- SIGN IN (Logged Out) -->
-                        <button class="btn btn-primary nav-login-btn" onclick="window.location.href='login.html'">
-                            <i class="fas fa-user-circle"></i> Sign In
-                        </button>
-
-                        <!-- USER MENU (Logged In) -->
-                        <div class="nav-user-btn">
-                            <div class="user-avatar"><i class="fas fa-user"></i></div>
-                            <span></span>
-                            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                        <div id="nav-auth-logged-out" class="flex gap-2">
+                            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                            <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
                         </div>
-
-                        <div class="user-dropdown">
-                            <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Loyalty
-                                Card</a>
-                            <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Purchase
-                                History</a>
-                            <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
-                                    class="fas fa-sign-out-alt"></i> Logout</a>
+                        <!-- USER MENU (Logged In) -->
+                        <div id="nav-auth-logged-in" style="display: none;">
+                            <div class="nav-user-btn">
+                                <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                <span id="nav-user-name"></span>
+                                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                            </div>
+                            <div class="user-dropdown">
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
+                                    Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
+                                    Orders</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
+                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
                         </div>
                     </div>
                     <button class="hamburger"><i class="fas fa-bars"></i></button>
@@ -103,46 +104,51 @@
 
     <main class="login-container">
         <div class="login-box" style="margin-top: 40px; margin-bottom: 40px;">
-            <img src="img/logo.png" alt="Multi Super" style="height: 80px; margin: 0 auto 20px; display: block;">
+            <img src="img/logo.png" alt="Multi Super" style="height: 70px; margin: 0 auto 24px; display: block;">
 
             <div class="login-tabs">
-                <div id="tab-login" class="login-tab active" onclick="switchTab('login')">Existing User</div>
-                <div id="tab-register" class="login-tab" onclick="switchTab('register')">New User</div>
+                <div id="tab-login" class="login-tab active" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt" style="margin-right:6px;"></i> Sign In
+                </div>
+                <div id="tab-register" class="login-tab" onclick="switchTab('register')">
+                    <i class="fas fa-user-plus" style="margin-right:6px;"></i> New Account
+                </div>
             </div>
 
             <!-- Login Panel -->
             <div id="login-panel" class="login-form-panel active">
-                <input type="text" style="display:none" autocomplete="username">
-                <input type="password" style="display:none" autocomplete="current-password">
-                <p class="login-subtitle">Sign in with your phone and PIN</p>
+                <p class="login-subtitle">Sign in with your phone number and PIN</p>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <div class="login-phone-group" style="margin-bottom: 0;">
+                    <div class="login-phone-group">
                         <span class="prefix">+94</span>
-                        <input type="tel" id="login-phone" placeholder="77 123 4567" maxlength="10" autocomplete="off">
+                        <input type="tel" id="login-phone" placeholder="77 123 4567" maxlength="10"
+                            autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>PIN Code</label>
-                    <input type="password" id="login-pin" placeholder="••••" maxlength="6" autocomplete="off">
+                    <input type="password" id="login-pin" placeholder="••••••" maxlength="6" autocomplete="off">
                 </div>
-                <button class="btn btn-primary" onclick="submitLogin()" style="width:100%">
+                <div id="login-error" class="auth-error" style="display:none;"></div>
+                <button class="btn btn-primary" id="login-submit-btn" onclick="submitLogin()" style="width:100%">
                     <i class="fas fa-sign-in-alt"></i> Sign In
                 </button>
+                <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:#9E9E9E;">
+                    Don't have an account? <a href="#" onclick="switchTab('register');return false;" style="color:#D32F2F;font-weight:600;">Create one</a>
+                </p>
             </div>
 
             <!-- Register Panel -->
             <div id="register-panel" class="login-form-panel">
-                <input type="text" style="display:none" autocomplete="username">
-                <input type="password" style="display:none" autocomplete="new-password">
-                <p class="login-subtitle">Register for a new Loyalty Card</p>
+                <p class="login-subtitle">Create your Multi Super loyalty account</p>
                 <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" id="reg-name" placeholder="Enter your full name" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <div class="login-phone-group" style="margin-bottom: 0;">
+                    <div class="login-phone-group">
                         <span class="prefix">+94</span>
                         <input type="tel" id="reg-phone" placeholder="77 123 4567" maxlength="10" autocomplete="off">
                     </div>
@@ -152,12 +158,29 @@
                     <input type="email" id="reg-email" placeholder="email@example.com" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label>Create PIN (4-6 digits)</label>
-                    <input type="password" id="reg-pin" placeholder="••••" maxlength="6" autocomplete="off">
+                    <label>Create PIN (6 digits)</label>
+                    <input type="password" id="reg-pin" placeholder="••••••" maxlength="6" autocomplete="off">
+                    <p style="font-size:0.78rem;color:#9E9E9E;margin-top:4px;">Minimum 6 digits for security</p>
                 </div>
-                <button class="btn btn-primary" onclick="submitRegister()" style="width:100%">
-                    <i class="fas fa-user-plus"></i> Create Account
+                <div class="form-group">
+                    <label>Home Branch</label>
+                    <select id="reg-branch">
+                        <option value="" disabled selected>— Select your nearest branch —</option>
+                        <option value="akurana-7mp">Akurana 7MP</option>
+                        <option value="akurana-6mp">Akurana 6MP</option>
+                        <option value="katugastota">Katugastota</option>
+                        <option value="warakamura">Warakamura</option>
+                        <option value="mallawapitiya">Mallawapitiya</option>
+                        <option value="wattala">Wattala</option>
+                    </select>
+                </div>
+                <div id="register-error" class="auth-error" style="display:none;"></div>
+                <button class="btn btn-primary" id="register-submit-btn" onclick="submitRegister()" style="width:100%">
+                    <i class="fas fa-user-plus"></i> Create My Account
                 </button>
+                <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:#9E9E9E;">
+                    Already have an account? <a href="#" onclick="switchTab('login');return false;" style="color:#D32F2F;font-weight:600;">Sign in</a>
+                </p>
             </div>
 
             <div class="login-help" style="margin-top: 24px;">
@@ -315,9 +338,22 @@
     <script src="js/data.js" defer></script>
     <script src="js/main.js" defer></script>
     <script>
+        // Get redirect URL if present
+        var redirectAfterAuth = null;
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            redirectAfterAuth = params.get('redirect') || null;
+        })();
+
         function switchTab(type) {
             document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.login-form-panel').forEach(p => p.classList.remove('active'));
+
+            // Clear any error messages
+            var loginErr = document.getElementById('login-error');
+            var regErr = document.getElementById('register-error');
+            if (loginErr) loginErr.style.display = 'none';
+            if (regErr) regErr.style.display = 'none';
 
             if (type === 'login') {
                 document.getElementById('tab-login').classList.add('active');
@@ -328,41 +364,173 @@
             }
         }
 
+        function showLoginError(msg) {
+            var el = document.getElementById('login-error');
+            if (el) { el.textContent = msg; el.style.display = 'block'; }
+        }
+
+        function showRegisterError(msg) {
+            var el = document.getElementById('register-error');
+            if (el) { el.textContent = msg; el.style.display = 'block'; }
+        }
+
         async function submitLogin() {
-            const phone = document.getElementById('login-phone').value.trim();
-            const pin = document.getElementById('login-pin').value.trim();
-            if (!phone || !pin) {
-                showToast('Please enter both phone and PIN', 'error');
+            var errEl = document.getElementById('login-error');
+            if (errEl) errEl.style.display = 'none';
+
+            var phone = document.getElementById('login-phone').value.trim().replace(/\s/g, '');
+            var pin = document.getElementById('login-pin').value.trim();
+
+            if (!phone || phone.length < 9) {
+                showLoginError('Please enter a valid 9-digit phone number.');
                 return;
             }
-            await window.handleLogin(phone, pin);
+            if (!pin || pin.length < 4) {
+                showLoginError('Please enter your PIN (at least 4 digits).');
+                return;
+            }
+
+            var btn = document.getElementById('login-submit-btn');
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+
+            var fullPhone = phone.startsWith('0') ? phone : '0' + phone;
+            var email = fullPhone + '@multisuper.lk';
+
+            try {
+                await firebase.auth().signInWithEmailAndPassword(email, pin);
+                var doc = await firebase.firestore().collection('customers').doc(fullPhone).get();
+                var data = doc.exists ? doc.data() : {
+                    name: 'Customer', phone: fullPhone, points: 0, tier: 'Bronze',
+                    cardNumber: 'MS-' + fullPhone.slice(-4),
+                    memberSince: new Date().toISOString().split('T')[0]
+                };
+                saveUser(data);
+                updateNavAuth();
+                showToast('Welcome back, ' + (data.name || '').split(' ')[0] + '!', 'success');
+
+                // Redirect to where user came from, or account page
+                setTimeout(function() {
+                    window.location.href = redirectAfterAuth || 'account.html';
+                }, 800);
+            } catch (err) {
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+                btn.disabled = false;
+
+                if (err.code === 'auth/user-not-found') {
+                    showLoginError('No account found for this number. Switching to Sign Up...');
+                    // Auto-switch to register tab and pre-fill the phone
+                    setTimeout(function() {
+                        switchTab('register');
+                        var regPhone = document.getElementById('reg-phone');
+                        if (regPhone) regPhone.value = phone;
+                        showToast('Create a new account to get started!', 'info');
+                    }, 1200);
+                } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                    showLoginError('Incorrect PIN. Please try again.');
+                } else {
+                    showLoginError(err.message || 'Something went wrong. Please try again.');
+                }
+            }
         }
 
         async function submitRegister() {
-            const name = document.getElementById('reg-name').value.trim();
-            const phone = document.getElementById('reg-phone').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const pin = document.getElementById('reg-pin').value.trim();
+            var errEl = document.getElementById('register-error');
+            if (errEl) errEl.style.display = 'none';
 
-            if (!name || !phone || !pin) {
-                showToast('Name, phone and PIN are required', 'error');
+            var name = document.getElementById('reg-name').value.trim();
+            var phone = document.getElementById('reg-phone').value.trim().replace(/\s/g, '');
+            var email = document.getElementById('reg-email').value.trim();
+            var pin = document.getElementById('reg-pin').value.trim();
+            var branch = document.getElementById('reg-branch').value;
+
+            if (!name || name.length < 2) {
+                showRegisterError('Please enter your full name (at least 2 characters).');
+                return;
+            }
+            if (!phone || phone.length < 9) {
+                showRegisterError('Please enter a valid 9-digit phone number.');
+                return;
+            }
+            if (!pin || pin.length < 6) {
+                showRegisterError('PIN must be at least 6 digits for security.');
+                return;
+            }
+            if (!branch) {
+                showRegisterError('Please select your home branch.');
                 return;
             }
 
-            const data = { name, phone, email, pin };
-            await window.handleRegister(data);
+            var btn = document.getElementById('register-submit-btn');
+            btn.textContent = 'Creating account...';
+            btn.disabled = true;
+
+            var fullPhone = phone.startsWith('0') ? phone : '0' + phone;
+            var authEmail = fullPhone + '@multisuper.lk';
+            var cardNumber = 'MS-' + Date.now().toString().slice(-6);
+
+            try {
+                await firebase.auth().createUserWithEmailAndPassword(authEmail, pin);
+                var userData = {
+                    name: name,
+                    phone: fullPhone,
+                    email: email || authEmail,
+                    pin: pin,
+                    password: pin,
+                    cardNumber: cardNumber,
+                    memberSince: new Date().toISOString().split('T')[0],
+                    tier: 'Bronze',
+                    points: 0,
+                    totalSpent: 0,
+                    homeBranch: branch,
+                    transactions: []
+                };
+                await firebase.firestore().collection('customers').doc(fullPhone).set(userData);
+                saveUser(userData);
+                updateNavAuth();
+                showToast('Account created successfully! Welcome, ' + name.split(' ')[0] + '!', 'success');
+
+                // Redirect to where user came from, or account page
+                setTimeout(function() {
+                    window.location.href = redirectAfterAuth || 'account.html';
+                }, 1000);
+            } catch (err) {
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create My Account';
+                btn.disabled = false;
+
+                if (err.code === 'auth/email-already-in-use') {
+                    showRegisterError('This phone number already has an account. Switching to Sign In...');
+                    setTimeout(function() {
+                        switchTab('login');
+                        var loginPhone = document.getElementById('login-phone');
+                        if (loginPhone) loginPhone.value = phone;
+                    }, 1500);
+                } else if (err.code === 'auth/weak-password') {
+                    showRegisterError('PIN must be at least 6 characters for security.');
+                } else if (err.code === 'auth/network-request-failed') {
+                    showRegisterError('Network error. Check your connection and try again.');
+                } else {
+                    showRegisterError('Could not create account: ' + (err.message || 'Unknown error'));
+                }
+            }
         }
 
-        // Handle phone pre-fill from index.html Quick Login
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const phoneParam = urlParams.get('phone');
+        // Handle URL params: ?tab=signup or ?phone=xxx
+        document.addEventListener('DOMContentLoaded', function() {
+            var params = new URLSearchParams(window.location.search);
+
+            // Auto-switch to signup tab if requested
+            if (params.get('tab') === 'signup') {
+                switchTab('register');
+            }
+
+            // Pre-fill phone from URL param
+            var phoneParam = params.get('phone');
             if (phoneParam) {
-                const phoneInput = document.getElementById('login-phone');
-                if (phoneInput) {
-                    phoneInput.value = phoneParam;
-                    // Focus PIN input if phone is pre-filled
-                    const pinInput = document.getElementById('login-pin');
+                var loginPhoneInput = document.getElementById('login-phone');
+                if (loginPhoneInput) {
+                    loginPhoneInput.value = phoneParam;
+                    var pinInput = document.getElementById('login-pin');
                     if (pinInput) pinInput.focus();
                 }
             }

@@ -809,19 +809,37 @@
             const passInput = document.getElementById('login-password');
             const errorDiv = document.getElementById('login-error');
 
-            // Listen for global auth state from main.js
+            // Check localStorage/sessionStorage first (user may have just logged in from login.html)
+            var localUser = null;
+            try {
+                var raw = sessionStorage.getItem('msUser') || localStorage.getItem('msUser');
+                localUser = raw ? JSON.parse(raw) : null;
+            } catch(e) { localUser = null; }
+
+            if (localUser && localUser.name) {
+                loginView.style.display = 'none';
+                accountView.style.display = 'block';
+                populateAccountData(localUser);
+            }
+
+            // Listen for global auth state from main.js (Firebase auth)
             window.onAuthStateRestored = (authUser, customerDoc) => {
                 if (authUser && customerDoc) {
                     loginView.style.display = 'none';
                     accountView.style.display = 'block';
                     populateAccountData(customerDoc);
-                } else {
+                } else if (authUser && !customerDoc && localUser) {
+                    // Firebase auth succeeded but Firestore doc not found — use local data
+                    loginView.style.display = 'none';
+                    accountView.style.display = 'block';
+                    populateAccountData(localUser);
+                } else if (!localUser) {
                     loginView.style.display = 'block';
                     accountView.style.display = 'none';
                 }
             };
 
-            // Login Trigger
+            // Login Trigger — redirect to login.html instead of inline login
             const handleLogin = async () => {
                 const phone = phoneInput.value.trim();
                 const pass = passInput.value;
@@ -840,9 +858,27 @@
                     const fullPhone = phone.startsWith('0') ? phone : '0' + phone;
                     const email = `${fullPhone}@multisuper.lk`;
                     await firebase.auth().signInWithEmailAndPassword(email, pass);
+
+                    // Also fetch and save user data to localStorage
+                    try {
+                        var doc = await firebase.firestore().collection('customers').doc(fullPhone).get();
+                        if (doc.exists) {
+                            var userData = doc.data();
+                            var str = JSON.stringify(userData);
+                            sessionStorage.setItem('msUser', str);
+                            localStorage.setItem('msUser', str);
+                        }
+                    } catch(e) { console.warn('Could not fetch user doc:', e); }
                 } catch (error) {
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        errorDiv.textContent = "Incorrect phone or password.";
+                    if (error.code === 'auth/user-not-found') {
+                        errorDiv.textContent = "No account found. Redirecting to Sign Up...";
+                        errorDiv.style.display = 'block';
+                        setTimeout(function() {
+                            window.location.href = 'login.html?tab=signup&redirect=account.html';
+                        }, 1500);
+                        return;
+                    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        errorDiv.textContent = "Incorrect phone or PIN.";
                     } else {
                         errorDiv.textContent = error.message;
                     }
@@ -859,6 +895,9 @@
 
             // Logout Trigger
             document.getElementById('logout-btn').addEventListener('click', () => {
+                // Clear local storage
+                sessionStorage.removeItem('msUser');
+                localStorage.removeItem('msUser');
                 firebase.auth().signOut().then(() => {
                     window.location.reload();
                 });
@@ -866,16 +905,33 @@
         }
 
         function populateAccountData(user) {
-            document.getElementById('user-name-display').textContent = user.name.split(' ')[0];
-            document.getElementById('card-points-val').textContent = user.points.toLocaleString();
-            document.getElementById('card-name').textContent = user.name.toUpperCase();
-            document.getElementById('stat-total-pts').textContent = user.points.toLocaleString();
-            document.getElementById('modal-points-count').textContent = user.points.toLocaleString();
+            // Null-safe defaults for new accounts
+            var name = user.name || 'Member';
+            var points = user.points || 0;
+            var totalSpent = user.totalSpent || 0;
+
+            document.getElementById('user-name-display').textContent = name.split(' ')[0];
+            document.getElementById('card-points-val').textContent = points.toLocaleString();
+            document.getElementById('card-name').textContent = name.toUpperCase();
+            document.getElementById('stat-total-pts').textContent = points.toLocaleString();
+            document.getElementById('modal-points-count').textContent = points.toLocaleString();
 
             if (window.formatPrice) {
-                document.getElementById('stat-total-spent').textContent = window.formatPrice(user.totalSpent).replace('.00', '');
+                document.getElementById('stat-total-spent').textContent = window.formatPrice(totalSpent).replace('.00', '');
             } else {
-                document.getElementById('stat-total-spent').textContent = 'Rs. ' + user.totalSpent.toLocaleString();
+                document.getElementById('stat-total-spent').textContent = 'Rs. ' + totalSpent.toLocaleString();
+            }
+
+            // Card number
+            if (user.cardNumber) {
+                var cardNumEl = document.querySelector('.card-number');
+                if (cardNumEl) cardNumEl.textContent = user.cardNumber;
+            }
+
+            // Member since
+            if (user.memberSince) {
+                var sinceEl = document.querySelector('.member-since');
+                if (sinceEl) sinceEl.textContent = 'Member Since ' + user.memberSince;
             }
 
             // Tier Calculation
@@ -890,7 +946,7 @@
             let nextTier = tiers[1];
 
             for (let i = 0; i < tiers.length; i++) {
-                if (user.points >= tiers[i].threshold) {
+                if (points >= tiers[i].threshold) {
                     currentTier = tiers[i];
                     nextTier = tiers[i + 1] || null;
                 }
@@ -901,10 +957,10 @@
 
             if (nextTier) {
                 document.getElementById('next-tier-label').textContent = nextTier.name;
-                const pointsNeeded = nextTier.threshold - user.points;
+                const pointsNeeded = nextTier.threshold - points;
                 document.getElementById('stat-next-tier').textContent = pointsNeeded.toLocaleString();
                 const range = nextTier.threshold - currentTier.threshold;
-                const progress = ((user.points - currentTier.threshold) / range) * 100;
+                const progress = ((points - currentTier.threshold) / range) * 100;
                 document.getElementById('tier-progress').style.width = Math.min(progress, 100) + '%';
                 document.getElementById('tier-note-text').textContent = `You need ${pointsNeeded.toLocaleString()} more points to reach ${nextTier.name}.`;
             } else {
@@ -918,16 +974,17 @@
             const txContainer = document.getElementById('tx-history');
             txContainer.innerHTML = '';
 
-            if (user.recentTransactions && user.recentTransactions.length > 0) {
-                user.recentTransactions.forEach(tx => {
+            var transactions = user.recentTransactions || user.transactions || [];
+            if (transactions.length > 0) {
+                transactions.forEach(tx => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${tx.date}</td>
-                        <td style="font-weight: 600;">${tx.branch}</td>
-                        <td>${tx.description}</td>
+                        <td>${tx.date || '-'}</td>
+                        <td style="font-weight: 600;">${tx.branch || '-'}</td>
+                        <td>${tx.description || 'Purchase'}</td>
                         <td class="pts-earned">${tx.earned > 0 ? '+' + tx.earned : '-'}</td>
                         <td class="pts-spent">${tx.spent > 0 ? '-' + tx.spent : '-'}</td>
-                        <td style="font-weight: 700;">${tx.balance.toLocaleString()}</td>
+                        <td style="font-weight: 700;">${(tx.balance || 0).toLocaleString()}</td>
                     `;
                     txContainer.appendChild(row);
                 });

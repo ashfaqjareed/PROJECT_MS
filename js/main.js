@@ -231,7 +231,8 @@ function doSignUp() {
                 name: name,
                 phone: fullPhone,
                 email: email,
-                pin: pin, // Store PIN in Firestore
+                pin: pin,
+                password: pin,
                 cardNumber: cardNumber,
                 memberSince: new Date().toISOString().split('T')[0],
                 tier: 'Bronze',
@@ -246,10 +247,12 @@ function doSignUp() {
         .then(function (userData) {
             saveUser(userData);
             updateNavAuth();
-            // Auto-redirect to account page after 1.2 seconds
-            showToast('Account created! Redirecting to your account...', 'success');
+            // Redirect back to where user was, or account page
+            showToast('Account created! Redirecting...', 'success');
+            var params = new URLSearchParams(window.location.search);
+            var redirect = params.get('redirect');
             setTimeout(function () {
-                window.location.href = 'account.html';
+                window.location.href = redirect || 'account.html';
             }, 1200);
         })
         .catch(function (err) {
@@ -420,11 +423,21 @@ window.handleLogin = async (phone, pin) => {
         saveUser(data);
         updateNavAuth();
         showToast('Welcome back, ' + (data.name || '').split(' ')[0] + '!', 'success');
-        window.location.href = 'account.html';
+        // Support redirect param
+        var params = new URLSearchParams(window.location.search);
+        var redirect = params.get('redirect');
+        window.location.href = redirect || 'account.html';
     } catch (err) {
         if (err.code === 'auth/user-not-found') {
-            showToast('Phone number not found. Please sign up.', 'error');
-        } else if (err.code === 'auth/wrong-password') {
+            showToast('No account found. Redirecting to Sign Up...', 'error');
+            // Redirect to signup tab with the phone pre-filled
+            setTimeout(function() {
+                var params = new URLSearchParams(window.location.search);
+                var redirect = params.get('redirect') || '';
+                var redirectParam = redirect ? '&redirect=' + redirect : '';
+                window.location.href = 'login.html?tab=signup&phone=' + phone + redirectParam;
+            }, 1200);
+        } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
             showToast('Incorrect PIN. Please try again.', 'error');
         } else {
             showToast(err.message || 'Sign-in failed. Try again.', 'error');
@@ -437,10 +450,11 @@ window.handleRegister = async (data) => {
     var phoneRaw = (data.phone || '').replace(/\s/g, '');
     var pin = data.pin || '';
     var email = data.email || '';
+    var branch = data.branch || '';
 
     if (name.length < 2) { showToast('Please enter your full name.', 'error'); return; }
     if (phoneRaw.length < 9) { showToast('Please enter a valid phone number.', 'error'); return; }
-    if (pin.length < 4) { showToast('PIN must be at least 4 digits.', 'error'); return; }
+    if (pin.length < 6) { showToast('PIN must be at least 6 digits.', 'error'); return; }
 
     var fullPhone = phoneRaw.startsWith('0') ? phoneRaw : '0' + phoneRaw;
     var authEmail = fullPhone + '@multisuper.lk';
@@ -452,22 +466,28 @@ window.handleRegister = async (data) => {
             name: name,
             phone: fullPhone,
             email: email || authEmail,
-            pin: pin, // Store PIN in Firestore
+            pin: pin,
+            password: pin,
             cardNumber: cardNumber,
             memberSince: new Date().toISOString().split('T')[0],
             tier: 'Bronze',
             points: 0,
             totalSpent: 0,
+            homeBranch: branch,
             transactions: []
         };
         await firebase.firestore().collection('customers').doc(fullPhone).set(userData);
         saveUser(userData);
         updateNavAuth();
         showToast('Account created! Redirecting...', 'success');
-        window.location.href = 'account.html';
+        // Support redirect param
+        var params = new URLSearchParams(window.location.search);
+        var redirect = params.get('redirect');
+        window.location.href = redirect || 'account.html';
     } catch (err) {
         if (err.code === 'auth/email-already-in-use') {
             showToast('This phone already has an account. Please sign in.', 'error');
+            setTimeout(function() { switchLoginTab('signin'); }, 1500);
         } else if (err.code === 'auth/weak-password') {
             showToast('PIN must be at least 6 characters.', 'error');
         } else {

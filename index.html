@@ -459,10 +459,16 @@
             <h2 class="section-title">Have a Multi Super Loyalty Card?</h2>
             <p class="section-subtitle" style="max-width: 600px; margin-inline: auto;">Check your points balance and see
                 your transaction history. All you need is your phone number.</p>
-            <button onclick="showLoginToast()" class="btn btn-primary btn-lg" style="margin-top: 10px;">Login to My
-                Account ?</button>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+                <a href="login.html?redirect=loyalty.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-sign-in-alt"></i> Login to My Account
+                </a>
+                <a href="login.html?tab=signup&redirect=loyalty.html" class="btn btn-outline btn-lg">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+            </div>
             <p style="margin-top: 20px; color: var(--color-text-muted); font-size: 0.9rem;">Don't have a card? Ask at
-                any branch counter.</p>
+                any branch counter or <a href="login.html?tab=signup" style="color:#D32F2F;font-weight:600;">sign up online</a>.</p>
         </div>
     </section>
 

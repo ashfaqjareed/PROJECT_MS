@@ -71,51 +71,7 @@ body {
     /* Space for fixed header */
 }
 
-/* 4.1 Header Fix — Container / Strip Style */
-.site-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
-    background: #C62828;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-}
-
-.site-header.header-hidden {
-    transform: translateY(-100%);
-}
-
-.site-header.header-visible {
-    transform: translateY(0);
-}
-
-.header-toggle-btn {
-    position: fixed;
-    top: 14px;
-    right: 18px;
-    z-index: 1100;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #D32F2F;
-    color: #fff;
-    border: none;
-    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
-    cursor: pointer;
-    font-size: 18px;
-    display: none;
-    /* Managed by JS */
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.header-toggle-btn:hover {
-    background: #B71C1C;
-    transform: scale(1.05);
-}
+/* Removed duplicate .site-header blocks, logic consolidated natively below */
 
 a {
     text-decoration: none;
@@ -641,18 +597,52 @@ p {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background:
-        repeating-linear-gradient(90deg,
-            rgba(255, 255, 255, 0.06) 0px,
-            rgba(255, 255, 255, 0.06) 2px,
-            transparent 2px,
-            transparent 48px),
-        linear-gradient(180deg, #D32F2F 0%, #B71C1C 100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #b71c1c; /* Deep red base */
+    
+    /* Strong 3D Deep Ridges and Lighting Container Texture */
+    background-image: 
+        repeating-linear-gradient(
+            90deg,
+            rgba(0,0,0,0.3) 0px,
+            rgba(0,0,0,0.1) 12px,
+            rgba(255,255,255,0.2) 12px,
+            rgba(255,255,255,0.05) 24px,
+            rgba(0,0,0,0.0) 24px,
+            rgba(0,0,0,0.0) 64px
+        ),
+        linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.4) 100%);
+        
     box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.30),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15),
-        inset 0 -2px 0 rgba(0, 0, 0, 0.15);
-    border-bottom: 3px solid #8B0000;
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+    border-bottom: 4px solid #7f0000;
+}
+
+/* Industrial Rivets on the container */
+.site-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle, rgba(0,0,0,0.5) 2.5px, transparent 3.5px),
+        radial-gradient(circle, rgba(255,255,255,0.15) 2.5px, transparent 3.5px);
+    background-size: 64px 45px;
+    background-position: 9px 8px, 10px 9px;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Making sure inner content is above the rivets */
+.site-header .header-main, 
+.site-header .nav-main {
+    position: relative;
+    z-index: 2;
 }
 
 /* Container top edge — corrugated metal look */
@@ -662,13 +652,49 @@ p {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 6px;
     background: repeating-linear-gradient(90deg,
-            #ff5252 0px,
-            #ff5252 6px,
-            #c62828 6px,
-            #c62828 12px);
+            #ff4040 0px,
+            #ff4040 8px,
+            #a00000 8px,
+            #a00000 16px);
     z-index: 1;
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.4);
+}
+
+.site-header.header-hidden {
+    transform: translateY(-100%);
+}
+
+.site-header.header-visible {
+    transform: translateY(0);
+}
+
+/* Mobile Toggle Hamburger */
+.header-toggle-btn {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    z-index: 1100;
+    width: 44px;
+    height: 44px;
+    border-radius: 6px; /* Industrial squared look */
+    background: #D32F2F;
+    color: #fff;
+    border: 2px solid #b71c1c;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-size: 18px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.header-toggle-btn:hover {
+    background: #B71C1C;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Row 2: Main Header */

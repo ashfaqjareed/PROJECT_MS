@@ -404,7 +404,7 @@
 </head>
 
 <body>
-    <button class="header-toggle-btn" id="header-toggle" aria-label="Show navigation">☰</button>
+    <button class="header-toggle-btn" id="header-toggle" aria-label="Show navigation"><i class="fas fa-bars"></i></button>
 
     <!-- Page Loader -->
     <div class="page-loader" id="page-loader">
@@ -502,43 +502,6 @@
     </header>
 
     <main class="account-container">
-        <!-- STATE A: NOT LOGGED IN -->
-        <section id="login-view" class="anim">
-            <div class="login-card">
-                <i class="fas fa-id-card-clip"
-                    style="font-size: 3rem; color: var(--color-primary); margin-bottom: 20px;"></i>
-                <h2>Login to Your Account</h2>
-                <p>Use the phone number linked to your Multi Super Loyalty Card to see your points and offers.</p>
-
-                <div class="form-group text-left" style="margin-bottom: 15px;">
-                    <label style="display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px;">Phone
-                        Number</label>
-                    <input type="tel" id="login-phone"
-                        style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: 8px;"
-                        placeholder="07X XXX XXXX">
-                </div>
-
-                <div class="form-group text-left">
-                    <label style="display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px;">PIN /
-                        Password</label>
-                    <input type="password" id="login-password"
-                        style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: 8px;"
-                        placeholder="Enter your secret PIN">
-                    <div id="login-error" class="form-error">Incorrect phone or PIN.</div>
-                </div>
-
-                <button id="login-btn" class="btn btn-primary w-full" style="margin-top: 25px;">Login securely</button>
-
-                <div
-                    style="margin-top: 30px; padding: 20px; background: var(--color-bg-alt); border-radius: var(--radius);">
-                    <h4 style="margin-bottom: 10px;">New to Multi Super?</h4>
-                    <p style="font-size: 0.85rem; margin-bottom: 15px;">Registration is free and takes less than a
-                        minute at any of our branches.</p>
-                    <a href="login.html" class="btn btn-outline btn-sm w-full">Go to Register</a>
-                </div>
-            </div>
-        </section>
-
         <!-- STATE B: LOGGED IN -->
         <section id="account-view" style="display: none;">
             <div class="account-header anim">
@@ -784,8 +747,8 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p> &copy; 2025 Multi Super. All rights reserved.</p>
-                <p style="font-size:0.75rem; color:#9E9E9E; margin-top:6px;">This is a demo website built for presentation purposes only. Not the official Multi Super website.</p>
+                <p> &copy; 2026 Multi Super. All rights reserved.</p>
+                
                 <div class="footer-legal">
                     <a href="about.html">Privacy Policy</a>
                     <a href="about.html">Terms of Use</a>
@@ -817,90 +780,46 @@
             } catch(e) { localUser = null; }
 
             if (localUser && localUser.name) {
-                loginView.style.display = 'none';
                 accountView.style.display = 'block';
                 populateAccountData(localUser);
+            } else {
+                // If no local user, wait a moment for Firebase auth to restore
+                // If that fails too, redirect to login
+                setTimeout(() => {
+                    const user = window.getUser ? window.getUser() : null;
+                    if (!user && !localStorage.getItem('msUser')) {
+                        window.location.href = 'login.html?redirect=account.html';
+                    }
+                }, 2000);
             }
 
             // Listen for global auth state from main.js (Firebase auth)
             window.onAuthStateRestored = (authUser, customerDoc) => {
                 if (authUser && customerDoc) {
-                    loginView.style.display = 'none';
                     accountView.style.display = 'block';
                     populateAccountData(customerDoc);
                 } else if (authUser && !customerDoc && localUser) {
                     // Firebase auth succeeded but Firestore doc not found — use local data
-                    loginView.style.display = 'none';
                     accountView.style.display = 'block';
                     populateAccountData(localUser);
-                } else if (!localUser) {
-                    loginView.style.display = 'block';
-                    accountView.style.display = 'none';
+                } else if (!localUser && !authUser) {
+                    // No auth found anywhere - redirect
+                    window.location.href = 'login.html?redirect=account.html';
                 }
             };
-
-            // Login Trigger — redirect to login.html instead of inline login
-            const handleLogin = async () => {
-                const phone = phoneInput.value.trim();
-                const pass = passInput.value;
-                errorDiv.style.display = 'none';
-
-                if (!phone || !pass) {
-                    errorDiv.textContent = "Please enter both phone and password.";
-                    errorDiv.style.display = 'block';
-                    return;
-                }
-
-                loginBtn.textContent = 'Logging in...';
-                loginBtn.disabled = true;
-
-                try {
-                    const fullPhone = phone.startsWith('0') ? phone : '0' + phone;
-                    const email = `${fullPhone}@multisuper.lk`;
-                    await firebase.auth().signInWithEmailAndPassword(email, pass);
-
-                    // Also fetch and save user data to localStorage
-                    try {
-                        var doc = await firebase.firestore().collection('customers').doc(fullPhone).get();
-                        if (doc.exists) {
-                            var userData = doc.data();
-                            var str = JSON.stringify(userData);
-                            sessionStorage.setItem('msUser', str);
-                            localStorage.setItem('msUser', str);
-                        }
-                    } catch(e) { console.warn('Could not fetch user doc:', e); }
-                } catch (error) {
-                    if (error.code === 'auth/user-not-found') {
-                        errorDiv.textContent = "No account found. Redirecting to Sign Up...";
-                        errorDiv.style.display = 'block';
-                        setTimeout(function() {
-                            window.location.href = 'login.html?tab=signup&redirect=account.html';
-                        }, 1500);
-                        return;
-                    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                        errorDiv.textContent = "Incorrect phone or PIN.";
-                    } else {
-                        errorDiv.textContent = error.message;
-                    }
-                    errorDiv.style.display = 'block';
-                    loginBtn.textContent = 'Login securely';
-                    loginBtn.disabled = false;
-                }
-            };
-
-            loginBtn.addEventListener('click', handleLogin);
-            passInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
 
             // Logout Trigger
             document.getElementById('logout-btn').addEventListener('click', () => {
                 // Clear local storage
                 sessionStorage.removeItem('msUser');
                 localStorage.removeItem('msUser');
-                firebase.auth().signOut().then(() => {
-                    window.location.reload();
-                });
+                if (firebase.auth().currentUser) {
+                    firebase.auth().signOut().then(() => {
+                        window.location.href = 'index.html';
+                    });
+                } else {
+                    window.location.href = 'index.html';
+                }
             });
         }
 

@@ -86,7 +86,12 @@ try {
 }
 
 window.getUser = () => {
-    return window.currentUserDoc;
+    // Return Firebase doc if available, otherwise fallback to local storage
+    if (window.currentUserDoc) return window.currentUserDoc;
+    try {
+        var raw = sessionStorage.getItem('msUser') || localStorage.getItem('msUser');
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
 };
 
 window.logoutUser = async () => {
@@ -95,21 +100,23 @@ window.logoutUser = async () => {
             await auth.signOut();
         }
         window.currentUserDoc = null;
+        clearUser();
         window.updateNavAuth();
         window.showToast('Successfully logged out', 'info');
+        // If on a protected page, redirect.
+        if (window.location.pathname.includes('account.html')) {
+            setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        }
     } catch (e) {
         console.error("Logout Error:", e);
     }
 };
 
 /* ── AUTH HELPERS ───────────────────────────────────── */
-function getUser() {
-    try {
-        var raw = sessionStorage.getItem('msUser') || localStorage.getItem('msUser');
-        return raw ? JSON.parse(raw) : null;
-    } catch (e) { return null; }
-}
+// Duplicate function declaration removed (now uses window.getUser)
+
 function saveUser(data) {
+    if(data) window.currentUserDoc = data;
     var str = JSON.stringify(data);
     sessionStorage.setItem('msUser', str);
     localStorage.setItem('msUser', str);
@@ -939,8 +946,7 @@ setTimeout(function () {
     if (loader) loader.style.display = 'none';
 }, 3000);
 
-// --- MALEE CHATBOT 2.0 (Sri Lankan Personality & Name Capture) ---
-window.maleeUserName = localStorage.getItem('malee_user_name') || null;
+// --- MALEE CHATBOT 2.0 (Sri Lankan Personality) ---
 
 window.toggleMalee = () => {
     const windowEl = document.getElementById('malee-window');
@@ -956,12 +962,10 @@ window.toggleMalee = () => {
             if (messages.children.length <= 1) { // Only default message exists
                 const user = window.getUser();
                 if (user && user.name) {
-                    window.maleeUserName = user.name.split(' ')[0];
-                    window.addChatMessage(`Ayubowan ${window.maleeUserName}! 🙏 I see you're logged in. How can I help you today?`, 'bot');
-                } else if (!window.maleeUserName) {
-                    window.addChatMessage("Ayubowan! 🙏 I'm Malee. Before we start, what's your name, machan?", 'bot');
+                    const firstName = user.name.split(' ')[0];
+                    window.addChatMessage(`Ayubowan ${firstName}! 🙏 I see you're logged in. How can I help you today?`, 'bot');
                 } else {
-                    window.addChatMessage(`Ayubowan ${window.maleeUserName}! 🙏 Nice to see you again. What can I help you with today?`, 'bot');
+                    window.addChatMessage("Ayubowan! 🙏 I'm Malee. How can I help you with your shopping today?", 'bot');
                 }
             }
         }
@@ -980,16 +984,8 @@ window.sendMaleeMessage = (quickMessage) => {
         const low = msg.toLowerCase();
         let response = "";
 
-        // 1. Name Capture Logic
-        if (!window.maleeUserName && !window.getUser()) {
-            window.maleeUserName = msg.split(' ').pop(); // Take last word as name or just the string
-            localStorage.setItem('malee_user_name', window.maleeUserName);
-            response = `Nice to meet you, ${window.maleeUserName}! 🙏 How can I help you with your shopping today?`;
-            window.addChatMessage(response, 'bot');
-            return;
-        }
-
-        const name = window.maleeUserName || (window.getUser() ? window.getUser().name.split(' ')[0] : "machan");
+        const user = window.getUser();
+        const name = user && user.name ? user.name.split(' ')[0] : "machan";
 
         // 2. Response Logic with Personality
         if (low.includes('branch') || low.includes('where') || low.includes('location')) {
@@ -1146,12 +1142,38 @@ window.initHeaderScroll = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Start of the day - apply daily price fluctuations
+    if (typeof window.applyDailyPriceFluctuations === 'function') {
+        window.applyDailyPriceFluctuations();
+    }
+
+    // Auto append redirect parameter to login links so users return to their spot
+    if (window.location.pathname.indexOf('login.html') === -1) {
+        var currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('a').forEach(function(a) {
+            var href = a.getAttribute('href');
+            if (href && href.indexOf('login.html') !== -1) {
+                if (href.indexOf('?') !== -1) {
+                    a.setAttribute('href', href + '&redirect=' + encodeURIComponent(currentPath));
+                } else {
+                    a.setAttribute('href', href + '?redirect=' + encodeURIComponent(currentPath));
+                }
+            }
+        });
+    }
+
     window.initHeaderScroll();
     window.initBranchSelector();
     window.initHotOffers();
+    
+    // Update auth immediately relying on localStorage cache
+    if (typeof window.updateNavAuth === 'function') {
+        window.updateNavAuth();
+    }
+    
     // Use timeout to ensure Firebase data logic has time if it's slow
     setTimeout(() => {
-        if (!window.currentUserDoc) window.updateNavAuth();
+        if (!window.currentUserDoc && typeof window.updateNavAuth === 'function') window.updateNavAuth();
     }, 500);
 });
 
@@ -1160,4 +1182,51 @@ document.addEventListener('firebaseDataLoaded', () => {
     window.initHotOffers();
 });
 
+// Calculate deterministic daily price fluctuations
+window.applyDailyPriceFluctuations = function() {
+    if (!window.PRODUCT_RATES && !window.WEEKLY_OFFERS) return;
+
+    var todayStr = new Date().toISOString().split('T')[0];
+    
+    // Simple string hashing
+    function stringHash(str) {
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash = hash & hash;
+        }
+        return Math.abs(hash);
+    }
+    
+    var dailySeed = stringHash(todayStr);
+
+    function getProductFactor(idStr) {
+        var combinedSeed = dailySeed + stringHash(idStr);
+        // Gives 0.0 to 0.99
+        var pseudoRand = (combinedSeed % 100) / 100;
+        // Gives -0.05 to +0.05 (i.e. +/- 5%)
+        return (pseudoRand * 0.1) - 0.05; 
+    }
+
+    if (window.PRODUCT_RATES) {
+        window.PRODUCT_RATES.forEach(function(product) {
+            var factor = getProductFactor(product.name);
+            var fluctuation = product.price * factor;
+            product.price = Math.round(product.price + fluctuation);
+        });
+    }
+
+    if (window.WEEKLY_OFFERS) {
+        window.WEEKLY_OFFERS.forEach(function(offer) {
+            var factor = getProductFactor(offer.title);
+            var fluctuation = offer.offerPrice * factor;
+            offer.offerPrice = Math.round(offer.offerPrice + fluctuation);
+            if (offer.originalPrice > offer.offerPrice) {
+                offer.discount = Math.round(((offer.originalPrice - offer.offerPrice) / offer.originalPrice) * 100);
+            }
+        });
+    }
+};
+
 // end of main.js
+

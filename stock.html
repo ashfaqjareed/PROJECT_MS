@@ -187,6 +187,8 @@
                 </div>
 
                 <div class="header-actions">
+                    
+
                     <div class="header-account-wrap">
                         <!-- SIGN IN (Logged Out) -->
                         <div id="nav-auth-logged-out" class="flex gap-2">
@@ -195,12 +197,12 @@
                         </div>
                         <!-- USER MENU (Logged In) -->
                         <div id="nav-auth-logged-in" class="nav-auth-logged-in" style="display: none;">
-                            <div class="nav-user-btn" id="user-menu-toggle">
+                            <div id="header-user-trigger" class="header-user-trigger">
                                 <div class="user-avatar"><i class="fas fa-user"></i></div>
                                 <span id="nav-user-name"></span>
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
-                            <div class="user-dropdown">
+                            <div id="header-user-dropdown" class="header-user-dropdown">
                                 <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
                                 <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
                                 <div class="dropdown-divider"></div>
@@ -208,8 +210,8 @@
                             </div>
                         </div>
                     </div>
-                    <button class="hamburger" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
                 </div>
+                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 

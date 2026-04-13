@@ -104,39 +104,40 @@
                 </div>
 
                 <div class="header-actions">
+                    
+
                     <div class="header-account-wrap">
                         <!-- SIGN IN (Logged Out) -->
-                        <button class="btn btn-primary nav-login-btn" onclick="window.location.href='login.html'">
-                            <i class="fas fa-user-circle"></i> Sign In
-                        </button>
-
-                        <!-- USER MENU (Logged In) -->
-                        <div class="nav-user-btn">
-                            <div class="user-avatar"><i class="fas fa-user"></i></div>
-                            <span></span>
-                            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                        <div id="nav-auth-logged-out" class="flex gap-2">
+                            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                            <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
                         </div>
-
-                        <div class="user-dropdown">
-                            <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Loyalty
-                                Card</a>
-                            <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Purchase
-                                History</a>
-                            <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
-                                    class="fas fa-sign-out-alt"></i> Logout</a>
+                        <!-- USER MENU (Logged In) -->
+                        <div id="nav-auth-logged-in" class="nav-auth-logged-in" style="display: none;">
+                            <div id="header-user-trigger" class="header-user-trigger">
+                                <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                <span id="nav-user-name"></span>
+                                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                            </div>
+                            <div id="header-user-dropdown" class="header-user-dropdown">
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 
-        <div class="header-nav hide-mobile">
+        <div class="header-nav bg-industrial-ridges hide-mobile">
             <div class="container flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="offers.html" class="nav-link">Weekly Offers</a>
                 <a href="rates.html" class="nav-link">Today's Rates</a>
-                <a href="products.html" class="nav-link">Products</a>
+                <a href="products.html" class="nav-link active">Products</a>
                 <a href="stock.html" class="nav-link">Stock Check</a>
                 <a href="pamphlet.html" class="nav-link">Pamphlet</a>
                 <a href="branches.html" class="nav-link">Branches</a>

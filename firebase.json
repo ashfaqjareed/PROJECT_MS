@@ -15,8 +15,10 @@
             "add_wattala_pill.js",
             "firebase-admin.js",
             "firebase-debug.log",
-            "firebase-admin.js",
             "info-logic.js"
         ]
+    },
+    "firestore": {
+        "rules": "firestore.rules"
     }
 }

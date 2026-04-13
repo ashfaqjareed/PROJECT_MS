@@ -247,16 +247,23 @@
                         </div>
                         <!-- USER MENU (Logged In) -->
                         <div id="nav-auth-logged-in" style="display: none;">
-                            <div class="nav-user-btn">
-                                <div class="user-avatar"><i class="fas fa-user"></i></div>
-                                <span id="nav-user-name"></span>
+                            <div id="header-user-trigger" class="header-user-trigger">
+                                <div class="user-avatar" id="user-avatar-initial">U</div>
+                                <span id="user-trigger-name">User</span>
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
-                            <div class="user-dropdown">
-                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
-                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
+                            <div id="header-user-dropdown" class="header-user-dropdown">
+                                <div class="dropdown-user-info">
+                                    <strong id="dropdown-user-name">Customer Name</strong>
+                                    <span id="dropdown-user-phone">07xxxxxxx</span>
+                                </div>
                                 <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                <a href="account.html" class="dropdown-item"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-item"><i class="fas fa-history"></i> Orders</a>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item dropdown-logout" onclick="window.logoutUser()">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
                             </div>
                         </div>
                     </div>

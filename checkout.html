@@ -79,20 +79,62 @@
         </div>
     </div>
 
-    <!-- Navbar (Simplified for Checkout) -->
-    <header class="navbar" id="navbar">
-        <div class="container navbar-container flex align-center justify-between">
-            <div class="nav-left">
-                <a href="index.html" class="logo">
-                    <img loading="lazy" src="img/logo.png" alt="Multi Super" style="height: 60px;">
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="header-main">
+            <div class="container flex align-center gap-4">
+                <a href="index.html" class="site-logo">
+                    <img loading="lazy" src="img/logo.png" alt="Multi Super Logo" style="height: 60px;">
                 </a>
+
+                <div class="header-search">
+                    <form class="search-wrap"
+                        onsubmit="window.location.href='search-results.html?q=' + document.getElementById('product-search').value; return false;">
+                        <input type="text" id="product-search" placeholder="Search products, brands, categories...">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+
+                <div class="header-actions">
+                    <div class="header-account-wrap">
+                        <!-- SIGN IN (Logged Out) -->
+                        <div id="nav-auth-logged-out" class="flex gap-2">
+                            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                            <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+                        </div>
+                        <!-- USER MENU (Logged In) -->
+                        <div id="nav-auth-logged-in" class="nav-auth-logged-in" style="display: none;">
+                            <div id="header-user-trigger" class="header-user-trigger">
+                                <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                <span id="nav-user-name"></span>
+                                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                            </div>
+                            <div id="header-user-dropdown" class="header-user-dropdown">
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="cart.html" class="btn btn-outline btn-sm" style="margin-left: 8px;"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+                </div>
+                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
-            <div class="nav-center">
-                <span class="font-bold text-lg">Secure Checkout</span>
-            </div>
-            <div class="nav-right">
-                <a href="cart.html" class="text-primary font-bold"><i class="fas fa-arrow-left mr-2"></i> Back to
-                    Cart</a>
+        </div>
+
+        <div class="header-nav bg-industrial-ridges hide-mobile">
+            <div class="container flex">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="offers.html" class="nav-link">Weekly Offers</a>
+                <a href="rates.html" class="nav-link">Today's Rates</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="stock.html" class="nav-link">Stock Check</a>
+                <a href="pamphlet.html" class="nav-link">Pamphlet</a>
+                <a href="branches.html" class="nav-link">Branches</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="account.html" class="nav-link" id="nav-my-account" style="display: none;">My Account</a>
             </div>
         </div>
     </header>

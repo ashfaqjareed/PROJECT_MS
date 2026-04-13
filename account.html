@@ -418,9 +418,7 @@
     </div>
 
     <!-- AI Chatbot Malee -->
-    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
-        <i class="fas fa-robot"></i>
-    </div>
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()"><img src="img/malee-avatar.png" alt="Malee AI" class="bot-avatar-img"></div>
 
     <div id="malee-window" class="chatbot-window">
         <div class="chatbot-header">
@@ -463,29 +461,26 @@
                             <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
                         </div>
                         <!-- USER MENU (Logged In) -->
-                        <div id="nav-auth-logged-in" style="display: none;">
-                            <div class="nav-user-btn">
+                        <div id="nav-auth-logged-in" class="nav-auth-logged-in" style="display: none;">
+                            <div class="nav-user-btn" id="user-menu-toggle">
                                 <div class="user-avatar"><i class="fas fa-user"></i></div>
                                 <span id="nav-user-name"></span>
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
                             <div class="user-dropdown">
-                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
-                                    Account</a>
-                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
-                                    Orders</a>
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
                                 <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
-                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                             </div>
                         </div>
                     </div>
+                    <button class="hamburger" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
                 </div>
-                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 
-        <div class="header-nav hide-mobile">
+        <div class="header-nav bg-industrial-ridges hide-mobile">
             <div class="container flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="offers.html" class="nav-link">Weekly Offers</a>
@@ -624,14 +619,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
-              if(v&&v.includes('@')){
-                showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
-                document.getElementById('footer-email-input').value='';
-              } else {
-                showToast('Please enter a valid email address','error');
-              }
-            ">Subscribe</button>
+                    <button class="newsletter-btn" onclick="window.subscribeNewsletter('footer-email-input')">Subscribe</button>
                 </div>
             </div>
         </div>

@@ -156,6 +156,56 @@ p {
     text-align: center;
 }
 
+.bg-alt {
+    position: relative;
+    background: #f4f4f4;
+    overflow: hidden;
+}
+
+/* 3D Ridge Grid Pattern for Backgrounds and Containers */
+.industrial-grid-light {
+    position: relative;
+    background-color: #f8f9fa;
+    background-image: 
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 20px),
+        repeating-linear-gradient(-45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 20px);
+}
+
+.card-3d-industrial {
+    position: relative;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 
+        0 10px 20px rgba(0,0,0,0.05),
+        inset 0 0 0 1px rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+}
+
+.card-3d-industrial:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.stock-item-3d {
+    transition: background 0.2s;
+}
+
+.stock-item-3d:hover {
+    background: rgba(229, 29, 32, 0.05);
+}
+
+.ticker-wrap {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+    border-bottom: 4px solid #e51d20;
+}
+
 .hidden {
     display: none !important;
 }
@@ -2103,30 +2153,42 @@ p {
 .chatbot-trigger {
     position: fixed;
     bottom: 30px;
-    left: 30px;
-    width: 60px;
-    height: 60px;
-    background: var(--color-primary);
-    color: white;
+    right: 30px; /* Moved to right for premium feel */
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #e51d20, #b31619);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    color: white;
+    font-size: 28px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 25px rgba(229, 29, 32, 0.4),
+                inset 0 2px 5px rgba(255, 255, 255, 0.3);
     z-index: 1000;
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.chatbot-trigger img.bot-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .chatbot-trigger:hover {
-    transform: scale(1.1);
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 15px 35px rgba(229, 29, 32, 0.5),
+                inset 0 2px 8px rgba(255, 255, 255, 0.4);
 }
 
 .chatbot-window {
     position: fixed;
     bottom: 100px;
-    left: 30px;
+    right: 30px;
     width: 350px;
     height: 450px;
     background: white;
@@ -2137,6 +2199,29 @@ p {
     overflow: hidden;
     z-index: 1000;
     border: 1px solid var(--color-border);
+}
+
+/* Industrial Grid & Rivet Aesthetics */
+.bg-industrial-ridges {
+    background-color: #f8f9fa;
+    background-image: 
+        repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(0,0,0,0.03) 38px, rgba(0,0,0,0.03) 40px),
+        repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(0,0,0,0.03) 38px, rgba(0,0,0,0.03) 40px);
+    position: relative;
+}
+
+.bg-industrial-ridges::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle, #ccc 2px, transparent 2px);
+    background-size: 40px 40px;
+    background-position: 19px 19px;
+    opacity: 0.3;
+    pointer-events: none;
 }
 
 .chatbot-header {
@@ -2154,30 +2239,60 @@ p {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    gap: 15px;
+    background: #f0f2f5;
+}
+
+.chat-msg-wrapper {
+    display: flex;
     gap: 10px;
-    background: #F8F9FA;
+    max-width: 85%;
+}
+
+.chat-msg-wrapper.bot {
+    align-self: flex-start;
+}
+
+.chat-msg-wrapper.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.chat-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
 }
 
 .chat-msg {
-    max-width: 80%;
     padding: 10px 14px;
-    border-radius: 12px;
+    border-radius: 18px;
     font-size: 0.9rem;
     line-height: 1.4;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .chat-msg.bot {
     background: white;
-    color: var(--color-text);
-    align-self: flex-start;
-    border-bottom-left-radius: 2px;
+    color: #333;
+    border-top-left-radius: 2px;
 }
 
 .chat-msg.user {
-    background: var(--color-primary);
+    background: linear-gradient(135deg, #e51d20, #b31619);
     color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
+}
 }
 
 .chatbot-input {
@@ -3171,19 +3286,51 @@ p {
 .header-account-wrap .nav-user-btn {
     display: none;
     align-items: center;
-    gap: 10px;
-    padding: 6px 14px;
-    background: #f8f9fa;
-    border: 1px solid var(--color-border);
-    border-radius: 30px;
+    gap: 12px;
+    padding: 6px 18px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(229, 29, 32, 0.2);
+    border-radius: 50px;
     cursor: pointer;
-    transition: all 0.2s ease;
-
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    color: #212121;
+    font-weight: 600;
 }
 
 .header-account-wrap.logged-in .nav-user-btn {
     display: flex;
+    background: rgba(255, 255, 255, 0.9); /* More solid for visibility against header */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
+.nav-user-btn .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #e51d20, #b31619);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(229, 29, 32, 0.3);
+}
+
+.nav-user-btn #nav-user-name {
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    color: #333;
+}
+
+.header-account-wrap .nav-user-btn:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .header-account-wrap .nav-user-btn:hover {
@@ -3983,4 +4130,160 @@ form select:focus,
 .login-help a {
     color: #D32F2F;
     font-weight: 600;
+}
+
+/* --- Account Dropdown System --- */
+.header-account-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.header-account-wrap .nav-login-btn {
+    display: flex;
+}
+
+.header-account-wrap.logged-in .nav-login-btn {
+    display: none;
+}
+
+.header-account-wrap .nav-user-btn {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    background: #f8f9fa;
+    color: var(--color-text); /* Ensure visible text */
+    border: 1px solid var(--color-border);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.header-account-wrap.logged-in .nav-user-btn {
+    display: flex;
+}
+
+.header-account-wrap .nav-user-btn:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: var(--color-primary);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 240px;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 12px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    transform: rotate(45deg);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.dropdown-link:hover {
+    background: #fef2f2;
+    color: var(--color-primary);
+}
+
+.dropdown-link i {
+    width: 20px;
+    font-size: 1.1rem;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 8px 0;
+}
+
+.dropdown-link.logout {
+    color: #dc2626;
+}
+
+.dropdown-link.logout:hover {
+    background: #fff1f2;
+}
+
+/* Industrial Header Styling */
+.header-nav.bg-industrial-ridges {
+    background-color: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-nav.bg-industrial-ridges::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.header-nav.bg-industrial-ridges::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size: 40px 40px;
+    pointer-events: none;
 }

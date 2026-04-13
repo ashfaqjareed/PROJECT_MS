@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description"
-        content="Multi Super � Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
+        content="Multi Super – Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
     <meta name="keywords"
         content="Multi Super, supermarket Sri Lanka, Akurana supermarket, Kandy supermarket, grocery Sri Lanka, fresh produce Kandy">
     <meta name="author" content="Multi Super">
-    <meta property="og:title" content="Multi Super � Everything You Need, Close to Home">
+    <meta property="og:title" content="Multi Super – Everything You Need, Close to Home">
     <meta property="og:description"
         content="Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices every week.">
     <meta property="og:url" content="https://multi-super.web.app">
@@ -258,17 +258,15 @@
     </div>
 
     <!-- AI Chatbot Malee -->
-    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
-        <i class="fas fa-robot"></i>
-    </div>
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()"><img src="img/malee-avatar.png" alt="Malee AI" class="bot-avatar-img"></div>
 
     <div id="malee-window" class="chatbot-window">
         <div class="chatbot-header">
-            <span>Malee � Multi Super AI</span>
+            <span>Malee – Multi Super AI</span>
             <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
         </div>
         <div id="malee-messages" class="chatbot-messages">
-            <div class="chat-msg bot">Ayubowan! ?? I'm Malee, your friendly Multi Super AI. What can I help you
+            <div class="chat-msg bot">Ayubowan! – I'm Malee, your friendly Multi Super AI. What can I help you
                 with
                 today?</div>
         </div>
@@ -303,29 +301,26 @@
                             <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
                         </div>
                         <!-- USER MENU (Logged In) -->
-                        <div id="nav-auth-logged-in" style="display: none;">
-                            <div class="nav-user-btn">
+                        <div id="nav-auth-logged-in" class="nav-auth-logged-in" style="display: none;">
+                            <div class="nav-user-btn" id="user-menu-toggle">
                                 <div class="user-avatar"><i class="fas fa-user"></i></div>
                                 <span id="nav-user-name"></span>
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
                             <div class="user-dropdown">
-                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
-                                    Account</a>
-                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
-                                    Orders</a>
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
                                 <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
-                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                             </div>
                         </div>
                     </div>
+                    <button class="hamburger" id="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
                 </div>
-                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 
-        <div class="header-nav hide-mobile">
+        <div class="header-nav bg-industrial-ridges hide-mobile">
             <div class="container flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="offers.html" class="nav-link">Weekly Offers</a>
@@ -361,7 +356,7 @@
         <div class="map-placeholder anim">
             <div style="text-align: center;">
                 <i class="fas fa-map-location-dot" style="font-size: 2.5rem; margin-bottom: 10px; display: block;"></i>
-                Interactive map coming soon � Powered by Leaflet.js
+                Interactive map coming soon – Powered by Leaflet.js
             </div>
         </div>
 
@@ -423,9 +418,9 @@
       </div>
       <div class="faq-answer">
         <strong>Bronze:</strong> 0 - 4,999 points<br>
-        <strong>Silver:</strong> 5,000 - 14,999 points � 3% bonus on selected items<br>
-        <strong>Gold:</strong> 15,000 - 29,999 points � 5% bonus + priority offers<br>
-        <strong>Platinum:</strong> 30,000+ points � 8% bonus + exclusive deals
+        <strong>Silver:</strong> 5,000 - 14,999 points – 3% bonus on selected items<br>
+        <strong>Gold:</strong> 15,000 - 29,999 points – 5% bonus + priority offers<br>
+        <strong>Platinum:</strong> 30,000+ points – 8% bonus + exclusive deals
       </div>
     </div>
 
@@ -435,7 +430,7 @@
         <span class="faq-icon">+</span>
       </div>
       <div class="faq-answer">
-        Yes. Your Multi Super Loyalty Card works at all 6 branches �
+        Yes. Your Multi Super Loyalty Card works at all 6 branches –
         Akurana 7MP, Akurana 6MP, Katugastota, Warakamura,
         Mallawapitiya, and Wattala. Your points are combined
         across all branches.
@@ -482,14 +477,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
-              if(v&&v.includes('@')){
-                showToast('<i class="fas fa-rocket"></i> You are subscribed! Expect your first pamphlet this Sunday.','success');
-                document.getElementById('footer-email-input').value='';
-              } else {
-                showToast('Please enter a valid email address','error');
-              }
-            ">Subscribe</button>
+                    <button class="newsletter-btn" onclick="window.subscribeNewsletter('footer-email-input')">Subscribe</button>
                 </div>
             </div>
         </div>

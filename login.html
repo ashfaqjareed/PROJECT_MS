@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description"
-        content="Multi Super � Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
+        content="Multi Super – Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
     <meta name="keywords"
         content="Multi Super, supermarket Sri Lanka, Akurana supermarket, Kandy supermarket, grocery Sri Lanka, fresh produce Kandy">
     <meta name="author" content="Multi Super">
-    <meta property="og:title" content="Multi Super � Everything You Need, Close to Home">
+    <meta property="og:title" content="Multi Super – Everything You Need, Close to Home">
     <meta property="og:description"
         content="Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices every week.">
     <meta property="og:url" content="https://multi-super.web.app">
@@ -36,9 +36,7 @@
     <button class="header-toggle-btn" id="header-toggle"><i class="fas fa-bars"></i></button>
 
     <!-- AI Chatbot Malee -->
-    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
-        <i class="fas fa-robot"></i>
-    </div>
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()"><img src="img/malee-avatar.png" alt="Malee AI" class="bot-avatar-img"></div>
 
     <!-- Site Header -->
     <header class="site-header">
@@ -71,22 +69,19 @@
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
                             <div class="user-dropdown">
-                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
-                                    Account</a>
-                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
-                                    Orders</a>
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
                                 <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
-                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                             </div>
                         </div>
                     </div>
-                    <button class="hamburger"><i class="fas fa-bars"></i></button>
                 </div>
+                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 
-        <div class="header-nav hide-mobile">
+        <div class="header-nav hide-mobile bg-industrial-ridges">
             <div class="container flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="offers.html" class="nav-link">Weekly Offers</a>
@@ -165,7 +160,7 @@
                 <div class="form-group">
                     <label>Home Branch</label>
                     <select id="reg-branch">
-                        <option value="" disabled selected>� Select your nearest branch �</option>
+                        <option value="" disabled selected>– Select your nearest branch –</option>
                         <option value="akurana-7mp">Akurana 7MP</option>
                         <option value="akurana-6mp">Akurana 6MP</option>
                         <option value="katugastota">Katugastota</option>
@@ -201,14 +196,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
-              if(v&&v.includes('@')){
-                showToast('&#x1F680; You are subscribed! Expect your first pamphlet this Sunday.','success');
-                document.getElementById('footer-email-input').value='';
-              } else {
-                showToast('Please enter a valid email address','error');
-              }
-            ">Subscribe</button>
+                    <button class="newsletter-btn" onclick="window.subscribeNewsletter('footer-email-input')">Subscribe</button>
                 </div>
             </div>
         </div>

@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description"
-        content="Multi Super � Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
+        content="Multi Super – Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices across Akurana, Katugastota, Warakamura, Mallawapitiya and Wattala.">
     <meta name="keywords"
         content="Multi Super, supermarket Sri Lanka, Akurana supermarket, Kandy supermarket, grocery Sri Lanka, fresh produce Kandy">
     <meta name="author" content="Multi Super">
-    <meta property="og:title" content="Multi Super � Everything You Need, Close to Home">
+    <meta property="og:title" content="Multi Super – Everything You Need, Close to Home">
     <meta property="og:description"
         content="Sri Lanka's trusted neighbourhood supermarket. Fresh produce, unbeatable prices every week.">
     <meta property="og:url" content="https://multi-super.web.app">
@@ -240,17 +240,15 @@
     <div class="desktop-notice">Best viewed on a desktop monitor for the full regional experience.</div>
 
     <!-- AI Chatbot Malee -->
-    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
-        <i class="fas fa-robot"></i>
-    </div>
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()"><img src="img/malee-avatar.png" alt="Malee AI" class="bot-avatar-img"></div>
 
     <div id="malee-window" class="chatbot-window">
         <div class="chatbot-header">
-            <span>Malee � Multi Super AI</span>
+            <span>Malee – Multi Super AI</span>
             <i class="fas fa-times" style="cursor: pointer;" onclick="window.toggleMalee()"></i>
         </div>
         <div id="malee-messages" class="chatbot-messages">
-            <div class="chat-msg bot">Ayubowan! ?? I'm Malee, your friendly Multi Super AI. What can I help you
+            <div class="chat-msg bot">Ayubowan! – I'm Malee, your friendly Multi Super AI. What can I help you
                 with
                 today?</div>
             <div class="quick-replies">
@@ -300,21 +298,19 @@
                                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                             </div>
                             <div class="user-dropdown">
-                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My
-                                    Account</a>
-                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i>
-                                    Orders</a>
+                                <a href="account.html" class="dropdown-link"><i class="fas fa-id-card"></i> My Account</a>
+                                <a href="account.html#history" class="dropdown-link"><i class="fas fa-history"></i> Orders</a>
                                 <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i
-                                        class="fas fa-sign-out-alt"></i> Logout</a>
+                                <a href="#" class="dropdown-link logout" onclick="window.logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                <button class="hamburger"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 
-        <div class="header-nav hide-mobile">
+        <div class="header-nav hide-mobile bg-industrial-ridges">
             <div class="container flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="offers.html" class="nav-link">Weekly Offers</a>
@@ -343,15 +339,15 @@
         <div class="story-grid">
             <div class="story-text">
                 <h2 style="margin-bottom: 25px;">Our Story</h2>
-                <p>Multi Super began with a simple goal � to give the people of Akurana a modern, well-stocked
+                <p>Multi Super began with a simple goal – to give the people of Akurana a modern, well-stocked
                     supermarket right at their doorstep. Founded in 2018 by a group of local entrepreneurs, our first
                     store on Main Street quickly became the go-to shopping destination for families in the Kandy
                     district.</p>
                 <p>As word spread, so did our reach. We opened our Kandy City branch on Peradeniya Road, followed by
-                    Matale and most recently our Wattala outlet � bringing us into the Western Province. Today, Multi
+                    Matale and most recently our Wattala outlet – bringing us into the Western Province. Today, Multi
                     Super operates across 4 locations, each tailored to the needs of the local community it serves.</p>
                 <p>But no matter how much we grow, we never forget where we started. Our commitment is to provide fresh
-                    produce, fair prices, and friendly service � every single day. That's the Multi Super promise.</p>
+                    produce, fair prices, and friendly service – every single day. That's the Multi Super promise.</p>
             </div>
             <div class="story-image">
                 <div style="text-align: center;">
@@ -443,7 +439,7 @@
             <div class="why-block">
                 <div class="why-content">
                     <h3>Always Informed</h3>
-                    <p>Our website and weekly pamphlet keep you updated on prices, offers, and stock � before you even
+                    <p>Our website and weekly pamphlet keep you updated on prices, offers, and stock – before you even
                         step into the store.</p>
                     <ul class="benefit-list">
                         <li>Weekly digital pamphlet delivered to your inbox</li>
@@ -460,7 +456,7 @@
             <i class="fas fa-users" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 20px;"></i>
             <h3>Meet Our Team</h3>
             <p style="color: var(--color-text-muted); max-width: 500px; margin: 15px auto 0;">We're building something
-                special. Our team profiles are coming soon � stay tuned!</p>
+                special. Our team profiles are coming soon – stay tuned!</p>
         </div>
 
         <!-- CTA -->
@@ -483,14 +479,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
-              if(v&&v.includes('@')){
-                showToast('<i class="fas fa-rocket"></i> You are subscribed! Expect your first pamphlet this Sunday.','success');
-                document.getElementById('footer-email-input').value='';
-              } else {
-                showToast('Please enter a valid email address','error');
-              }
-            ">Subscribe</button>
+                    <button class="newsletter-btn" onclick="window.subscribeNewsletter('footer-email-input')">Subscribe</button>
                 </div>
             </div>
         </div>

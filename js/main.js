@@ -1012,10 +1012,24 @@ window.sendMaleeMessage = (quickMessage) => {
 
 window.addChatMessage = (text, sender) => {
     const container = document.getElementById('malee-messages');
+    const msgWrapper = document.createElement('div');
+    msgWrapper.className = 'chat-msg-wrapper ' + sender;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'chat-avatar';
+    if (sender === 'bot') {
+        avatar.innerHTML = `<img src="img/malee-avatar.png" alt="Malee" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+    } else {
+        avatar.innerHTML = `<i class="fas fa-user"></i>`;
+    }
+
     const msgEl = document.createElement('div');
     msgEl.className = 'chat-msg ' + sender;
     msgEl.textContent = text;
-    container.appendChild(msgEl);
+
+    msgWrapper.appendChild(avatar);
+    msgWrapper.appendChild(msgEl);
+    container.appendChild(msgWrapper);
     container.scrollTop = container.scrollHeight;
 };
 
@@ -1226,6 +1240,46 @@ window.applyDailyPriceFluctuations = function() {
             }
         });
     }
+};
+
+// --- CENTRALIZED NEWSLETTER SUBSCRIPTION ---
+window.subscribeNewsletter = function(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input || !input.value) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+    
+    const email = input.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Please enter a valid email format.');
+        return;
+    }
+
+    // Simulate subscription logic (could be Firebase call)
+    console.log('Newsletter subscription for:', email);
+    
+    // Industrial style feedback
+    const btn = input.nextElementSibling;
+    const originalText = btn ? btn.textContent : 'Subscribe';
+    
+    if (btn) {
+        btn.textContent = 'Subscribed!';
+        btn.style.background = '#28a745';
+        btn.disabled = true;
+    }
+
+    alert('Bohoma Sthuthi! You have been subscribed to Multi Super newsletters.');
+    input.value = '';
+
+    setTimeout(() => {
+        if (btn) {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+        }
+    }, 5000);
 };
 
 // end of main.js

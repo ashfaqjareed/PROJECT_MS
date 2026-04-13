@@ -51,9 +51,7 @@
     <div class="desktop-notice">Best viewed on a desktop monitor for the full regional experience.</div>
 
     <!-- AI Chatbot Malee -->
-    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()">
-        <i class="fas fa-robot"></i>
-    </div>
+    <div id="malee-trigger" class="chatbot-trigger" onclick="window.toggleMalee()"><img src="img/malee-avatar.png" alt="Malee AI" class="bot-avatar-img"></div>
 
     <div id="malee-window" class="chatbot-window">
         <div class="chatbot-header">
@@ -127,7 +125,7 @@
         </div>
         </div>
 
-        <div class="header-nav hide-mobile">
+        <div class="header-nav hide-mobile bg-industrial-ridges">
             <div class="container flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="offers.html" class="nav-link">Weekly Offers</a>
@@ -274,7 +272,7 @@
     <!-- Alert Banner (Hardcoded for Demo) -->
     <div class="alert-banner alert-warning">
         <div class="container flex justify-between align-center">
-            <span>?? Stock Alert Eggs are running low at Kandy branch. <a href="stock.html"
+            <span>– Stock Alert Eggs are running low at Kandy branch. <a href="stock.html"
                     style="color: inherit; text-decoration: underline;">Check your branch ?</a></span>
             <i class="fas fa-xmark" style="cursor: pointer;" onclick="this.parentElement.parentElement.remove()"></i>
         </div>
@@ -513,14 +511,7 @@
                 <div class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address"
                         id="footer-email-input">
-                    <button class="newsletter-btn" onclick="if(!window.getUser()){showToast('Please Login or Sign Up to subscribe for offers!','warning');setTimeout(()=>window.location.href='login.html',1500);return;}var v=document.getElementById('footer-email-input').value;
-              if(v&&v.includes('@')){
-                showToast('? You are subscribed! Expect your first pamphlet this Sunday.','success');
-                document.getElementById('footer-email-input').value='';
-              } else {
-                showToast('Please enter a valid email address','error');
-              }
-            ">Subscribe</button>
+                    <button class="newsletter-btn" onclick="window.subscribeNewsletter('footer-email-input')">Subscribe</button>
                 </div>
             </div>
         </div>
@@ -683,7 +674,7 @@
                     if (diff < 0) { trendClass = 'text-success'; trendIcon = 'fa-arrow-down'; }
 
                     return `
-                        <div class="card p-2" style="min-width: 180px; text-align: center;">
+                        <div class="card p-2 card-3d-industrial" style="min-width: 180px; text-align: center; background: #fff; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
                             <div style="font-size: 1.5rem; margin-bottom: 5px;">${p.emoji}</div>
                             <div style="font-weight: 700; font-size: 0.9rem;">${p.name}</div>
                             <div style="color: var(--color-success); font-weight: 800;">${window.formatPrice(p.price)}</div>
@@ -702,12 +693,13 @@
             branchIds.forEach(id => {
                 const container = document.getElementById(`stock-snapshot-${id}`);
                 if (container) {
+                    container.classList.add('industrial-grid-light');
                     container.innerHTML = keyProducts.map(pName => {
                         const status = window.getStockStatus(id, pName);
                         const statusLabel = status === 'in-stock' ? 'IN STOCK' : (status === 'low-stock' ? 'LOW STOCK' : (status === 'out-stock' ? 'OUT OF STOCK' : 'IN STOCK'));
                         const statusColor = status === 'in-stock' ? 'var(--color-success)' : (status === 'low-stock' ? 'var(--color-warning)' : (status === 'out-stock' ? 'var(--color-error)' : 'var(--color-success)'));
                         return `
-                            <div class="flex justify-between align-center" style="font-size: 0.85rem;">
+                            <div class="flex justify-between align-center stock-item-3d" style="font-size: 0.85rem; padding: 4px 8px; border-bottom: 1px dashed #eee;">
                                 <span>${pName}</span>
                                 <span style="color: ${statusColor}; font-weight: 700; font-size: 0.7rem;">&check; ${statusLabel}</span>
                             </div>
